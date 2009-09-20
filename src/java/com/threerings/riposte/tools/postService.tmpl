@@ -1,0 +1,22 @@
+package $package {
+
+import com.threerings.riposte.client.PostService;
+import com.threerings.riposte.client.PostListener;
+#foreach ($import in $imports)
+import $import;
+#end
+
+/**
+ * The Actionscript client side of the Java ${name}Service interface.
+ */
+public interface ${name}PostService extends PostService
+{
+#foreach ($m in $methods)
+#if ($velocityCount > 1)
+
+#end
+    // from Java interface ${name}Service
+    function $m.method.name (#if ($m.hasArgs(false))$m.getASArgList(false), #{end}listener :PostListener = null) :void;
+#end
+}
+}

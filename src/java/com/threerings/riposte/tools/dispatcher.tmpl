@@ -1,0 +1,46 @@
+package $package;
+
+#foreach ($import in $imports)
+import $import;
+#end
+
+/**
+ * Provides the implementation of {@link PostDispatcher} for the the
+ * {@link ${name}Service}.  When a request comes to the server for this service, this
+ * class is responsible for calling the correct service methods with the correct arguments and
+ * for getting the result back to the user
+ */
+public class ${name}Dispatcher
+    implements PostDispatcher
+{
+    @Inject
+    public ${name}Dispatcher (${name}Service service)
+    {
+        _service = service;
+    }
+
+    @Override // documentation inherited
+    public Object dispatchRequest (int methodId, Object[] args)
+        throws Exception
+    {
+        switch (methodId) {
+#foreach ($m in $methods)
+        case ${m.code}:
+            #if (!$m.returnsVoid())return #{end}_service.${m.method.name}(
+                $m.getUnwrappedArgList(true)
+            );
+            #if ($m.returnsVoid())return null;
+#end
+
+#end
+        default:
+            throw new PostException(PostCodes.METHOD_NOT_FOUND, "" + methodId);
+        }
+    }
+
+#foreach ($m in $methods)
+    protected static final int ${m.code} = ${velocityCount};
+#end
+
+    protected ${name}Service _service;
+}
