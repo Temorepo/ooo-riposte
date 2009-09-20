@@ -7,7 +7,7 @@
   <property name="copyright.holder" value="Nathan Curtis"/>
   <property name="deploy.dir" value="dist"/>
   <property name="classes.dir" value="${deploy.dir}/classes"/>
-  <property name="libs.dir.java" value="lib/java"/>
+  <property name="libs.dir" value="lib/java"/>
 
   <!-- declare our classpath -->
   <path id="classpath">
