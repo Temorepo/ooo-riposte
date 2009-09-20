@@ -23,7 +23,8 @@ package com.threerings.riposte.server;
 import com.threerings.util.MessageBundle;
 
 /**
- *  Used to report failures when executing service requests.
+ *  Used to report failures when executing service requests.  PostExceptions will not be logged on
+ *  the server, as they're intended to be solely for reporting failures to the client.
  */
 public class PostException extends Exception
 {

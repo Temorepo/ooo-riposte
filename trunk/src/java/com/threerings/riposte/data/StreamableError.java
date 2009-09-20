@@ -22,6 +22,11 @@ package com.threerings.riposte.data;
 
 import com.threerings.io.Streamable;
 
+/**
+ * A Streamable class to encapsulate an error that occurred on the server.  Service methods should
+ * not create one of these - Any exception thrown from a service method will result in a
+ * StreamableError being created and sent back to the client.
+ */
 public class StreamableError
     implements Streamable
 {
@@ -35,6 +40,11 @@ public class StreamableError
         _cause = cause;
     }
 
+    /**
+     * Get the cause of this error.  Usually, this is Exception.getMessage();
+     *
+     * @return the cause.
+     */
     public String getCause ()
     {
         return _cause;

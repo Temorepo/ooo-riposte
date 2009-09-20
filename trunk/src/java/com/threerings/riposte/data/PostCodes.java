@@ -20,14 +20,14 @@
 
 package com.threerings.riposte.data;
 
+/**
+ * A collection of translation strings sent when things go wrong at a low level.
+ */
 public class PostCodes
 {
-    /** This code is dispatched when a service method is not found on the server. */
-    public static final String METHOD_NOT_FOUND = "m.method_not_found";
-
-    /** This code is dispatched when the user is not logged in. */
-    public static final String USER_NOT_AUTHED = "m.user_not_authed";
-
     /** This code is dispatched when something broke during streaming. */
-    public static final String STREAMING_ERROR = "m.streaming_error";
+    public static final String STREAMING_ERROR = "e.streaming_error";
+
+    /** This code is dispatched when there is a version mismatch between client and server. */
+    public static final String VERSION_MISMATCH = "e.version_mismatch";
 }
