@@ -54,7 +54,7 @@
       <link href="http://www.threerings.net/code/narya/docs/api/"/>
       <link href="http://google-collections.googlecode.com/svn/trunk/javadoc/"/>
       <link href="http://google-guice.googlecode.com/svn/trunk/javadoc/"/>
-      <link href="http://java.sun.com/products/servlet/2.2/javadoc/"/>
+      <link href="http://java.sun.com/products/servlet/2.5/docs/servlet-2_5-mr2/"/>
     </javadoc>
   </target>
 
