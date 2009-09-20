@@ -44,6 +44,9 @@ import com.threerings.riposte.data.PostCodes;
 import com.threerings.riposte.server.PostDispatcher;
 import com.threerings.riposte.server.PostException;
 
+/**
+ * The ant task that will handle a bunch of code generation to make using Riposte much easier.
+ */
 public class GenRiposteTask extends InvocationTask
 {
     public class PostServiceMethod extends ServiceMethod

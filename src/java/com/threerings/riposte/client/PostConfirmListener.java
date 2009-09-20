@@ -20,6 +20,10 @@
 
 package com.threerings.riposte.client;
 
+/**
+ * Adds an additional {@link requestProcessed} function.  Use this for service calls that don't
+ * return a value.
+ */
 public interface PostConfirmListener extends PostListener
 {
     /**

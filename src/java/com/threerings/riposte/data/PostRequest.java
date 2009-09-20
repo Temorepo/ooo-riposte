@@ -22,24 +22,51 @@ package com.threerings.riposte.data;
 
 import com.threerings.io.Streamable;
 
+/**
+ * An encapsulation of service call data, this is the main class to get sent over the wire.  Code
+ * that uses Riposte should never create one of these.
+ */
 public class PostRequest
     implements Streamable
 {
+    /**
+     * Get the id of the service being used in this request.
+     *
+     * @return the service id.
+     */
     public int getServiceId ()
     {
         return _serviceId;
     }
 
+    /**
+     * Get the id of the method call being requested.
+     *
+     * @return the method id.
+     */
     public int getMethodId ()
     {
         return _methodId;
     }
 
+    /**
+     * Get the args of the method sent from the client.  All args must either be basic Java types,
+     * or must implement {@link com.threerings.io.Streamable}.
+     *
+     * @return the args for this defined RPC call
+     */
     public Object[] getArgs ()
     {
         return _args;
     }
 
+    /**
+     * Get the version string for this RPC call.  Client and server should both hold a current RPC
+     * version string.  If versioning is not required, client and server can simply use null in
+     * this field.
+     *
+     * @return the version of the client sending this request.
+     */
     public String getVersion ()
     {
         return _version;
