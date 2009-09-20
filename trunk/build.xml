@@ -82,7 +82,7 @@
   </target>
 
   <!-- builds our Flash library -->
-  <target name="aslib" unless="no_build_aslib" depends="checkaslib">
+  <target name="aslib" unless="no_build_aslib" depends="checkaslib,prepare">
     <!-- Generate aslib-config.xml for Flash Player and general compilation -->
     <copy file="etc/aslib-config.xml.in" tofile="${deploy.dir}/aslib-config.xml">
       <filterset>
