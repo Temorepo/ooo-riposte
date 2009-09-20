@@ -24,9 +24,17 @@ import com.threerings.io.ObjectInputStream;
 import com.threerings.io.ObjectOutputStream;
 import com.threerings.io.Streamable;
 
+/**
+ * A Streamable class to encapsulate an error that occurred on the server.  Service methods should
+ * not create one of these - Any exception thrown from a service method will result in a
+ * StreamableError being created and sent back to the client.
+ */
 public class StreamableError
     implements Streamable
 {
+    /**
+     * Get the cause of this error.  Usually, this is Exception.getMessage();
+     */
     public function getCause () :String
     {
         return _cause;

@@ -20,6 +20,9 @@
 
 package com.threerings.riposte.client {
 
+/**
+ * A convenience class for using actionscript inline functions to create a PostConfirmListener.
+ */
 public class ConfirmAdapter extends PostAdapter
     implements PostConfirmListener
 {

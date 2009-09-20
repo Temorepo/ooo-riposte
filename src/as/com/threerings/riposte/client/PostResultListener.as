@@ -21,8 +21,7 @@
 package com.threerings.riposte.client {
 
 /**
- * Extends the {@link PostListener} with a basic success
- * callback that delivers a result object.
+ * Extends the PostListener with a basic success callback that delivers a result object.
  */
 public interface PostResultListener extends PostListener
 {

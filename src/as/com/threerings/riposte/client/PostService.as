@@ -20,6 +20,10 @@
 
 package com.threerings.riposte.client {
 
+/**
+ * A marker interface that client-side service interfaces should extend.  Client-side services and
+ * marshallers will typically be generated via the genriposte ant task.
+ */
 public interface PostService
 {
     // nada

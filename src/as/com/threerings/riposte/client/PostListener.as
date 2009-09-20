@@ -20,14 +20,19 @@
 
 package com.threerings.riposte.client {
 
+/**
+ * All Riposte service calls receive a PostListener optional argument at the end to allow the
+ * calling entity to find out about return values and failures.<br/><br/>
+ *
+ * All exception thrown by service methods are caugh, with the message sent along the wire to
+ * requestFailed.
+ */
 public interface PostListener
 {
     /**
-     * Called to report request failure. If the invocation services
-     * system detects failure of any kind, it will report it via this
-     * callback. Particular services may also make use of this
-     * callback to report failures of their own, or they may opt to
-     * define more specific failure callbacks.
+     * Called to report request failure. If the RPC system detects failure of any kind, it will
+     * report it via this callback. Particular services may also make use of this callback to report
+     * failures of their own.
      */
     function requestFailed (cause :String) :void;
 }

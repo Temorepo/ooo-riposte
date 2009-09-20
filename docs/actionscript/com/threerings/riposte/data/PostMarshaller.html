@@ -42,7 +42,9 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 </tr>
 </table>
 <p></p>
-<p></p>
+ Client-side Marshallers for specific services should extend this class and implement the service
+ in question.  Marshallers will typically be generated automatically by the ant genriposte task.
+ <p></p>
 <br>
 <hr>
 </div>
@@ -71,7 +73,8 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
 <a class="signatureLink" href="#init()">init</a>(client:<a href="../client/PostClient.html">PostClient</a>):void</div>
-<div class="summaryTableDescription"></div>
+<div class="summaryTableDescription">
+     Called by the PostClient when this marshaller is registered.</div>
 </td><td class="summaryTableOwnerCol">PostMarshaller</td>
 </tr>
 </table>
@@ -87,14 +90,17 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
 <a class="signatureLink" href="#getServiceId()">getServiceId</a>():int</div>
-<div class="summaryTableDescription"></div>
+<div class="summaryTableDescription">
+     Client-side marshallers are responsible for knowing their own service id, and for reporting
+     it here.</div>
 </td><td class="summaryTableOwnerCol">PostMarshaller</td>
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
 <a class="signatureLink" href="#sendRequest()">sendRequest</a>(methodId:int, args:Array):void</div>
-<div class="summaryTableDescription"></div>
+<div class="summaryTableDescription">
+     Posts an RPC request to the server with the given args.</div>
 </td><td class="summaryTableOwnerCol">PostMarshaller</td>
 </tr>
 </table>
@@ -124,8 +130,10 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>protected function getServiceId():int</code>
-<p></p>
+<code>protected function getServiceId():int</code><p>
+     Client-side marshallers are responsible for knowing their own service id, and for reporting
+     it here.
+     </p><p></p>
 <span class="label">Returns</span>
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
@@ -140,7 +148,9 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public function init(client:<a href="../client/PostClient.html">PostClient</a>):void</code><span class="label">Parameters</span>
+<code>public function init(client:<a href="../client/PostClient.html">PostClient</a>):void</code><p>
+     Called by the PostClient when this marshaller is registered.
+     </p><span class="label">Parameters</span>
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
 <td width="20px"></td><td><code><span class="label">client</span>:<a href="../client/PostClient.html">PostClient</a></code></td>
@@ -154,7 +164,11 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>protected function sendRequest(methodId:int, args:Array):void</code><span class="label">Parameters</span>
+<code>protected function sendRequest(methodId:int, args:Array):void</code><p>
+     Posts an RPC request to the server with the given args.  If there are any PostListener
+     args, they are not sent along to the server; instead, they're registered on the client to
+     receive callbacks with the RPC call finishes.
+     </p><span class="label">Parameters</span>
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
 <td width="20px"></td><td><code><span class="label">methodId</span>:int</code></td>

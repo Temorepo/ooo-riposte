@@ -24,6 +24,10 @@ import com.threerings.io.ObjectInputStream;
 import com.threerings.io.ObjectOutputStream;
 import com.threerings.io.Streamable;
 
+/**
+ * An ecnapsulation of service call data, this is the main class to get sent over the wire.  Code
+ * that uses Riposte should never create one of these.
+ */
 public class PostRequest
     implements Streamable
 {
