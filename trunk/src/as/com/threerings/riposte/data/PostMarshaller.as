@@ -23,19 +23,35 @@ package com.threerings.riposte.data {
 import com.threerings.riposte.client.PostClient;
 import com.threerings.riposte.client.PostService;
 
+/**
+ * Client-side Marshallers for specific services should extend this class and implement the service
+ * in question.  Marshallers will typically be generated automatically by the ant genriposte task.
+ */
 public class PostMarshaller
     implements PostService
 {
+    /**
+     * Called by the PostClient when this marshaller is registered.
+     */
     public function init (client :PostClient) :void
     {
         _client = client;
     }
 
+    /**
+     * Posts an RPC request to the server with the given args.  If there are any PostListener
+     * args, they are not sent along to the server; instead, they're registered on the client to
+     * receive callbacks with the RPC call finishes.
+     */
     protected function sendRequest (methodId :int, args :Array) :void
     {
         _client.sendRequest(getServiceId(), methodId, args);
     }
 
+    /**
+     * Client-side marshallers are responsible for knowing their own service id, and for reporting
+     * it here.
+     */
     protected function getServiceId () :int
     {
         throw new Error("getServiceId() is abstract in PostMarshaller");

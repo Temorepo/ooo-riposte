@@ -38,7 +38,8 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("PÂ
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('com/threerings/riposte/client/class-list.html');" href="com/threerings/riposte/client/PostAdapter.html">PostAdapter</a> &mdash; Class in package <a onclick="javascript:loadClassListFrame('com/threerings/riposte/client/class-list.html');" href="com/threerings/riposte/client/package-detail.html">com.threerings.riposte.client</a></td>
 </tr>
 <tr>
-<td width="20"></td><td></td>
+<td width="20"></td><td>
+ A convenience class for using actionscript inline functions to create a PostListener.</td>
 </tr>
 <tr>
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('com/threerings/riposte/client/class-list.html');" href="com/threerings/riposte/client/PostAdapter.html#PostAdapter()">PostAdapter</a>(failedFunc) &mdash; Constructor in class com.threerings.riposte.client.<a onclick="javascript:loadClassListFrame('com/threerings/riposte/client/class-list.html');" href="com/threerings/riposte/client/PostAdapter.html">PostAdapter</a></td>
@@ -52,43 +53,47 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("PÂ
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('com/threerings/riposte/client/class-list.html');" href="com/threerings/riposte/client/PostClient.html">PostClient</a> &mdash; Class in package <a onclick="javascript:loadClassListFrame('com/threerings/riposte/client/class-list.html');" href="com/threerings/riposte/client/package-detail.html">com.threerings.riposte.client</a></td>
 </tr>
 <tr>
-<td width="20"></td><td></td>
+<td width="20"></td><td>
+ The main client class.</td>
 </tr>
 <tr>
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('com/threerings/riposte/client/class-list.html');" href="com/threerings/riposte/client/PostClient.html#PostClient()">PostClient</a>(serviceAddress, version) &mdash; Constructor in class com.threerings.riposte.client.<a onclick="javascript:loadClassListFrame('com/threerings/riposte/client/class-list.html');" href="com/threerings/riposte/client/PostClient.html">PostClient</a></td>
 </tr>
 <tr>
-<td width="20"></td><td></td>
-</tr>
-<tr>
-<td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('com/threerings/riposte/data/class-list.html');" href="com/threerings/riposte/data/PostCodes.html">PostCodes</a> &mdash; Class in package <a onclick="javascript:loadClassListFrame('com/threerings/riposte/data/class-list.html');" href="com/threerings/riposte/data/package-detail.html">com.threerings.riposte.data</a></td>
-</tr>
-<tr>
-<td width="20"></td><td></td>
+<td width="20"></td><td>
+     Create a new PostClient for processing RPC calls to the Java server.</td>
 </tr>
 <tr>
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('com/threerings/riposte/client/class-list.html');" href="com/threerings/riposte/client/PostConfirmListener.html"><i>PostConfirmListener</i></a> &mdash; Interface in package <a onclick="javascript:loadClassListFrame('com/threerings/riposte/client/class-list.html');" href="com/threerings/riposte/client/package-detail.html">com.threerings.riposte.client</a></td>
 </tr>
 <tr>
-<td width="20"></td><td></td>
+<td width="20"></td><td>
+ Adds an additional requestProcesed function.</td>
 </tr>
 <tr>
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('com/threerings/riposte/client/class-list.html');" href="com/threerings/riposte/client/PostListener.html"><i>PostListener</i></a> &mdash; Interface in package <a onclick="javascript:loadClassListFrame('com/threerings/riposte/client/class-list.html');" href="com/threerings/riposte/client/package-detail.html">com.threerings.riposte.client</a></td>
 </tr>
 <tr>
-<td width="20"></td><td></td>
+<td width="20"></td><td>
+ All Riposte service calls receive a PostListener optional argument at the end to allow the
+ calling entity to find out about return values and failures.<br/><br/>
+  All exception thrown by service methods are caugh, with the message sent along the wire to
+ requestFailed.</td>
 </tr>
 <tr>
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('com/threerings/riposte/data/class-list.html');" href="com/threerings/riposte/data/PostMarshaller.html">PostMarshaller</a> &mdash; Class in package <a onclick="javascript:loadClassListFrame('com/threerings/riposte/data/class-list.html');" href="com/threerings/riposte/data/package-detail.html">com.threerings.riposte.data</a></td>
 </tr>
 <tr>
-<td width="20"></td><td></td>
+<td width="20"></td><td>
+ Client-side Marshallers for specific services should extend this class and implement the service
+ in question.</td>
 </tr>
 <tr>
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('com/threerings/riposte/data/class-list.html');" href="com/threerings/riposte/data/PostRequest.html">PostRequest</a> &mdash; Class in package <a onclick="javascript:loadClassListFrame('com/threerings/riposte/data/class-list.html');" href="com/threerings/riposte/data/package-detail.html">com.threerings.riposte.data</a></td>
 </tr>
 <tr>
-<td width="20"></td><td></td>
+<td width="20"></td><td>
+ An ecnapsulation of service call data, this is the main class to get sent over the wire.</td>
 </tr>
 <tr>
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('com/threerings/riposte/data/class-list.html');" href="com/threerings/riposte/data/PostRequest.html#PostRequest()">PostRequest</a>(serviceId, methodId, args, version) &mdash; Constructor in class com.threerings.riposte.data.<a onclick="javascript:loadClassListFrame('com/threerings/riposte/data/class-list.html');" href="com/threerings/riposte/data/PostRequest.html">PostRequest</a></td>
@@ -101,13 +106,14 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("PÂ
 </tr>
 <tr>
 <td width="20"></td><td>
- Extends the {</td>
+ Extends the PostListener with a basic success callback that delivers a result object.</td>
 </tr>
 <tr>
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('com/threerings/riposte/client/class-list.html');" href="com/threerings/riposte/client/PostService.html"><i>PostService</i></a> &mdash; Interface in package <a onclick="javascript:loadClassListFrame('com/threerings/riposte/client/class-list.html');" href="com/threerings/riposte/client/package-detail.html">com.threerings.riposte.client</a></td>
 </tr>
 <tr>
-<td width="20"></td><td></td>
+<td width="20"></td><td>
+ A marker interface that client-side service interfaces should extend.</td>
 </tr>
 <tr>
 <td colspan="2" class="idxrow"><a onclick="javascript:loadClassListFrame('com/threerings/riposte/client/class-list.html');" href="com/threerings/riposte/client/ConfirmAdapter.html#_processed">_processed</a> &mdash; Property in class com.threerings.riposte.client.<a onclick="javascript:loadClassListFrame('com/threerings/riposte/client/class-list.html');" href="com/threerings/riposte/client/ConfirmAdapter.html">ConfirmAdapter</a></td>

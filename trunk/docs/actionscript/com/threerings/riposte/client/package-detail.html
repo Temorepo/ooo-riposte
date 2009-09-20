@@ -39,17 +39,23 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Pa
 <th>&nbsp;</th><th width="30%">Interface</th><th width="70%">Description</th>
 </tr>
 <tr class="prow1">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><i><a href="PostConfirmListener.html">PostConfirmListener</a></i></td><td class="summaryTableLastCol">&nbsp;</td>
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><i><a href="PostConfirmListener.html">PostConfirmListener</a></i></td><td class="summaryTableLastCol">
+ Adds an additional requestProcesed function.</td>
 </tr>
 <tr class="prow0">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><i><a href="PostListener.html">PostListener</a></i></td><td class="summaryTableLastCol">&nbsp;</td>
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><i><a href="PostListener.html">PostListener</a></i></td><td class="summaryTableLastCol">
+ All Riposte service calls receive a PostListener optional argument at the end to allow the
+ calling entity to find out about return values and failures.<br/><br/>
+  All exception thrown by service methods are caugh, with the message sent along the wire to
+ requestFailed.</td>
 </tr>
 <tr class="prow1">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><i><a href="PostResultListener.html">PostResultListener</a></i></td><td class="summaryTableLastCol">
- Extends the {</td>
+ Extends the PostListener with a basic success callback that delivers a result object.</td>
 </tr>
 <tr class="prow0">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><i><a href="PostService.html">PostService</a></i></td><td class="summaryTableLastCol">&nbsp;</td>
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><i><a href="PostService.html">PostService</a></i></td><td class="summaryTableLastCol">
+ A marker interface that client-side service interfaces should extend.</td>
 </tr>
 </table>
 <a name="classSummary"></a>
@@ -59,13 +65,16 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Pa
 <th>&nbsp;</th><th width="30%">Class</th><th width="70%">Description</th>
 </tr>
 <tr class="prow1">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="ConfirmAdapter.html">ConfirmAdapter</a></td><td class="summaryTableLastCol">&nbsp;</td>
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="ConfirmAdapter.html">ConfirmAdapter</a></td><td class="summaryTableLastCol">
+ A convenience class for using actionscript inline functions to create a PostConfirmListener.</td>
 </tr>
 <tr class="prow0">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="PostAdapter.html">PostAdapter</a></td><td class="summaryTableLastCol">&nbsp;</td>
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="PostAdapter.html">PostAdapter</a></td><td class="summaryTableLastCol">
+ A convenience class for using actionscript inline functions to create a PostListener.</td>
 </tr>
 <tr class="prow1">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="PostClient.html">PostClient</a></td><td class="summaryTableLastCol">&nbsp;</td>
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="PostClient.html">PostClient</a></td><td class="summaryTableLastCol">
+ The main client class.</td>
 </tr>
 <tr class="prow0">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableSecondCol"><a href="ResultAdapter.html">ResultAdapter</a></td><td class="summaryTableLastCol">

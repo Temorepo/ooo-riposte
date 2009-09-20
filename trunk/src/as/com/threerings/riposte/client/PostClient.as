@@ -39,25 +39,51 @@ import com.threerings.util.Log;
 import com.threerings.util.Map;
 import com.threerings.util.Maps;
 
+/**
+ * The main client class.
+ */
 public class PostClient
 {
+    /**
+     * Create a new PostClient for processing RPC calls to the Java server.
+     *
+     * @param serviceAddress The fully qualified HTTP address to connect to the server at.
+     * @param version The version string to send along with RPC requests.  If this version is null
+     *                an error will be thrown on the server unless the server is also configured
+     *                with a null version.
+     */
     public function PostClient (serviceAddress :String, version :String = null)
     {
         _serviceAddress = serviceAddress;
         _version = version;
     }
 
+    /**
+     * Configure a service marshaller.
+     *
+     * @param clazz The service class that the marshaller implements.  The service class should be
+     *              an extension of PostService.
+     * @param marshaller The class that implements the given server.
+     */
     public function registerService (clazz :Class, marshaller :PostMarshaller) :void
     {
         marshaller.init(this);
         _services.put(clazz, marshaller);
     }
 
+    /**
+     * Get the implementor of the given service.
+     */
     public function getService (clazz :Class) :PostService
     {
         return _services.get(clazz) as PostService;
     }
 
+    /**
+     * Get the implementor of the given service.
+     *
+     * @throws Error if the service has not been registered with this client.
+     */
     public function requireService (clazz :Class) :PostService
     {
         var isvc :PostService = getService(clazz);
@@ -69,6 +95,7 @@ public class PostClient
 
     /**
      * This method should only be called by subclasses of PostMarshaller.
+     * @private
      */
     public function sendRequest (serviceId :int, methodId :int, args :Array) :void
     {
@@ -109,21 +136,6 @@ public class PostClient
         } catch (err :Error) {
             listenersFailed(listeners, err.toString());
         }
-    }
-
-    public function startBatch () :void
-    {
-        // TODO
-    }
-
-    public function commitBatch () :void
-    {
-        // TODO
-    }
-
-    public function cancelBatch () :void
-    {
-        // TODO
     }
 
     protected function loaderComplete (listeners :Array, event :Event) :void

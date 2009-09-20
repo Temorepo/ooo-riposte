@@ -20,6 +20,9 @@
 
 package com.threerings.riposte.client {
 
+/**
+ * A convenience class for using actionscript inline functions to create a PostListener.
+ */
 public class PostAdapter
     implements PostListener
 {
