@@ -30,4 +30,7 @@ public class PostCodes
 
     /** This code is dispatched when there is a version mismatch between client and server. */
     public static final String VERSION_MISMATCH = "e.version_mismatch";
+
+    /** This code is dispatched when a method was not found. */
+    public static final String METHOD_NOT_FOUND = "e.method_not_found";
 }
