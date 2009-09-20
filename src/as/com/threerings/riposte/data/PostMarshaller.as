@@ -22,7 +22,6 @@ package com.threerings.riposte.data {
 
 import com.threerings.riposte.client.PostClient;
 import com.threerings.riposte.client.PostService;
-import com.threerings.riposte.client.PostListener;
 
 public class PostMarshaller
     implements PostService

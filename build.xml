@@ -3,6 +3,7 @@
   <property name="lib.name" value="riposte"/>
   <property name="src.dir.java" value="src/java"/>
   <property name="javadoc.dir" value="docs/javadoc"/>
+  <property name="asdoc.dir" value="docs/actionscript"/>
   <property name="doc.overview" value="docs/overview.html"/>
   <property name="copyright.holder" value="Nathan Curtis"/>
   <property name="deploy.dir" value="dist"/>
@@ -100,6 +101,22 @@
       <arg value="${deploy.dir}/${lib.name}lib.swc"/>
     </java>
     <delete file="${deploy.dir}/aslib-config.xml"/>
+  </target>
+
+  <!-- builds the ActionScript documention -->
+  <target name="asdoc" unless="no_build_aslib" depends="checkaslib,prepare">
+    <java classpath="${flexsdk.dir}/lib/asdoc.jar" classname="flex2.tools.ASDoc" fork="true">
+      <jvmarg value="-Xmx1024m"/>
+      <jvmarg value="-Dsun.io.useCanonCashes=false"/>
+      <jvmarg value="-Xbootclasspath/p:${flexsdk.dir}/asdoc/lib/xalan.jar"/>
+      <arg value="+flexlib=${flexsdk.dir}/frameworks"/>
+      <arg line="-library-path=${flexsdk.dir}/frameworks/libs"/>
+      <arg line="-library-path+=${deploy.dir}/lib/ooolib.swc"/>
+      <arg line="-library-path+=${deploy.dir}/lib/naryalib.swc"/>
+      <arg line="-templates-path ${flexsdk.dir}/asdoc/templates"/>
+      <arg line="-doc-sources src/as"/>
+      <arg line="-output ${asdoc.dir}"/>
+    </java>
   </target>
 
   <target name="dist" depends="prepare,compile,aslib"
