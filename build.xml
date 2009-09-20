@@ -23,6 +23,10 @@
     <mkdir dir="${deploy.dir}"/>
     <mkdir dir="${deploy.dir}/lib"/>
     <mkdir dir="${classes.dir}"/>
+    <copy todir="${classes.dir}">
+      <fileset dir="${src.dir.java}" includes="**/*.tmpl"/>
+      <fileset dir="${src.dir.java}" includes="**/*.properties"/>
+    </copy>
     <copy todir="${deploy.dir}/lib" flatten="true">
       <fileset refid="${lib.name}.libs"/>
     </copy>
@@ -52,5 +56,28 @@
       <link href="http://google-guice.googlecode.com/svn/trunk/javadoc/"/>
       <link href="http://java.sun.com/products/servlet/2.2/javadoc/"/>
     </javadoc>
+  </target>
+
+  <target name="compile" depends="prepare" description="Compiles the code.">
+    <javac srcdir="${src.dir.java}" destdir="${classes.dir}" includeAntRuntime="false">
+      <classpath refid="classpath"/>
+      <compilerarg value="-Xlint"/>
+      <compilerarg value="-Xlint:-serial"/>
+    </javac>
+  </target>
+
+  <target name="dist" depends="prepare,compile"
+          description="Compiles the code and builds our jar file.">
+    <jar destfile="${deploy.dir}/${lib.name}.jar" basedir="${classes.dir}"/>
+      <fileset dir="${classes.dir}">
+        <exclude name="com/threerings/riposte/tools/**"/>
+        <exclude name="com/threerings/riposte/tools.properties"/>
+      </fileset>
+    <jar destfile="${deploy.dir}/${lib.name}-tools.jar" basedir="${classes.dir}">
+      <fileset dir="${classes.dir}"/>
+      <zipfileset src="${deploy.dir}/lib/samskivert.jar"/>
+      <zipfileset src="${deploy.dir}/lib/velocity-1.5-dev.jar"/>
+      <zipfileset src="${deploy.dir}/lib/narya-tools.jar"/>
+    </jar>
   </target>
 </project>

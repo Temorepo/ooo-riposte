@@ -5,7 +5,7 @@
     <include name="ant.jar"/>
     <include name="google-collect.jar"/>
     <include name="samskivert.jar"/>
-    <include name="velocity.jar"/>
+    <include name="velocity-1.5-dev.jar"/>
     <include name="servlet-api.jar"/>
     <include name="guice.jar"/>
     <include name="narya-base.jar"/>
