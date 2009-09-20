@@ -106,8 +106,8 @@
       <keep-generated-actionscript>false</keep-generated-actionscript>
       <!-- compiler.library-path: list of SWC files or directories that contain SWC files-->
       <library-path>
-         <path-element>../lib/ooolib.swc</path-element>
-         <path-element>../lib/naryalib.swc</path-element>
+         <path-element>../dist/lib/ooolib.swc</path-element>
+         <path-element>../dist/lib/naryalib.swc</path-element>
       </library-path>
       <!-- compiler.locale: specifies the locale for internationalization-->
       <locale>
