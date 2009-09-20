@@ -20,10 +20,12 @@ The library is built using ant. It can be found here:
   http://jakarta.apache.org/ant/
 
 Next, ensure that the necessary third party jar files are copied to the lib/
-directory. See etc/libs-incl.xml for the list of those jar files.
+directory. See etc/libs-incl.xml for the list of those jar files.  To build the
+actionscript library, copy etc/build.properties.dist to etc/build.properties
+and specify the location of your flex install.
 
-Finally invoke 'ant dist' to compile the code and generate a jar file. Invoke
-'ant -p' to see information on other build targets.
+Finally invoke 'ant dist' to compile the code and generate jar and swc files.
+Invoke 'ant -p' to see information on other build targets.
 
 Riposte also provides .classpath and .project files for Eclipse users which
 require that you set an EXT_LIBS_DIR variable indicating the location of the

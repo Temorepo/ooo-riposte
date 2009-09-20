@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="riposte" basedir=".">
+<project name="riposte" basedir="." default="compile">
   <property name="lib.name" value="riposte"/>
   <property name="src.dir.java" value="src/java"/>
   <property name="javadoc.dir" value="docs/javadoc"/>
@@ -7,7 +7,7 @@
   <property name="copyright.holder" value="Nathan Curtis"/>
   <property name="deploy.dir" value="dist"/>
   <property name="classes.dir" value="${deploy.dir}/classes"/>
-  <property name="libs.dir" value="lib/java"/>
+  <property name="libs.dir" value="lib"/>
 
   <!-- declare our classpath -->
   <path id="classpath">
@@ -17,6 +17,9 @@
 
   <!-- our dependencies are in a separate file so that we can integrate into OOO builds -->
   <import file="etc/libs-incl.xml"/>
+
+  <!-- we read our flexsdk.dir from build.properties when building standalone -->
+  <property file="etc/build.properties"/>
 
   <!-- prepares the application directories -->
   <target name="prepare">
@@ -66,7 +69,40 @@
     </javac>
   </target>
 
-  <target name="dist" depends="prepare,compile"
+  <!-- checks whether our Flash library needs building -->
+  <target name="checkaslib">
+    <condition property="no_build_aslib"><or>
+      <not><available file="${flexsdk.dir}/lib/compc.jar"/></not>
+      <and>
+        <uptodate targetfile="${deploy.dir}/${lib.name}lib.swc">
+          <srcfiles dir="src/as" includes="**/*.as"/>
+        </uptodate>
+      </and>
+    </or></condition>
+  </target>
+
+  <!-- builds our Flash library -->
+  <target name="aslib" unless="no_build_aslib" depends="checkaslib">
+    <!-- Generate aslib-config.xml for Flash Player and general compilation -->
+    <copy file="etc/aslib-config.xml.in" tofile="${deploy.dir}/aslib-config.xml">
+      <filterset>
+        <filter token="flex_sdk_dir" value="${flexsdk.dir}"/>
+      </filterset>
+    </copy>
+    <!-- Build Narya -->
+    <java jar="${flexsdk.dir}/lib/compc.jar" fork="true" failonerror="true">
+      <arg value="-load-config"/>
+      <arg value="${deploy.dir}/aslib-config.xml"/>
+      <arg value="-compiler.optimize"/>
+      <arg value="-compiler.source-path=src/as/"/>
+      <arg value="-include-sources=src/as/"/>
+      <arg value="-output"/>
+      <arg value="${deploy.dir}/${lib.name}lib.swc"/>
+    </java>
+    <delete file="${deploy.dir}/aslib-config.xml"/>
+  </target>
+
+  <target name="dist" depends="prepare,compile,aslib"
           description="Compiles the code and builds our jar file.">
     <jar destfile="${deploy.dir}/${lib.name}.jar" basedir="${classes.dir}"/>
       <fileset dir="${classes.dir}">
