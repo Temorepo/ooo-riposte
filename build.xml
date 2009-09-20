@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<project name="riposte" basedir=".">
+  <property name="lib.name" value="riposte"/>
+  <property name="src.dir.java" value="src/java"/>
+  <property name="javadoc.dir" value="docs/javadoc"/>
+  <property name="doc.overview" value="docs/overview.html"/>
+  <property name="copyright.holder" value="Nathan Curtis"/>
+  <property name="deploy.dir" value="dist"/>
+  <property name="classes.dir" value="${deploy.dir}/classes"/>
+  <property name="libs.dir.java" value="lib/java"/>
+
+  <!-- declare our classpath -->
+  <path id="classpath">
+    <pathelement location="${classes.dir}"/>
+    <fileset dir="${deploy.dir}/lib" includes="*.jar"/>
+  </path>
+
+  <!-- our dependencies are in a separate file so that we can integrate into OOO builds -->
+  <import file="etc/libs-incl.xml"/>
+
+  <!-- prepares the application directories -->
+  <target name="prepare">
+    <mkdir dir="${deploy.dir}"/>
+    <mkdir dir="${deploy.dir}/lib"/>
+    <mkdir dir="${classes.dir}"/>
+    <copy todir="${deploy.dir}/lib" flatten="true">
+      <fileset refid="${lib.name}.libs"/>
+    </copy>
+  </target>
+
+  <!-- cleans out the intermediate build files -->
+  <target name="clean" description="Cleans out build results.">
+    <delete dir="${classes.dir}"/>
+    <delete failonerror="false"><fileset dir="${deploy.dir}" includes="*.jar"/></delete>
+  </target>
+
+  <!-- wipes the entire build directory clean -->
+  <target name="distclean" description="Completely removes build result directory.">
+    <delete dir="${deploy.dir}"/>
+  </target>
+
+  <target name="javadoc" depends="prepare" description="Generates the javadoc documentation">
+    <javadoc windowtitle="${lib.name} API" doctitle="${lib.name} API"
+             overview="${doc.overview}" destdir="${javadoc.dir}">
+      <packageset dir="${src.dir.java}"/>
+      <bottom>Copyright &#169; 2009 ${copyright.holder}.  All Rights Reserved.</bottom>
+      <classpath refid="classpath"/>
+      <link href="http://java.sun.com/j2se/1.5/docs/api/"/>
+      <link href="http://samskivert.com/code/samskivert/docs/"/>
+      <link href="http://www.threerings.net/code/narya/docs/api/"/>
+      <link href="http://google-collections.googlecode.com/svn/trunk/javadoc/"/>
+      <link href="http://google-guice.googlecode.com/svn/trunk/javadoc/"/>
+      <link href="http://java.sun.com/products/servlet/2.2/javadoc/"/>
+    </javadoc>
+  </target>
+</project>

@@ -21,11 +21,11 @@
 package com.threerings.riposte.client;
 
 /**
- * All Riposte service calls receive a PostListener optional argument at the end to allow the 
- * calling entity to find out about return values and failures.
- * 
- * All exceptions through by service methods are caught, with the message sent along the wire to 
- * {@link requestFailed}.
+ * All Riposte service calls receive a PostListener optional argument at the end to allow the
+ * calling entity to find out about return values and failures.<br/><br/>
+ *
+ * All exceptions through by service methods are caught, with the message sent along the wire to
+ * requestFailed.
  */
 public interface PostListener
 {

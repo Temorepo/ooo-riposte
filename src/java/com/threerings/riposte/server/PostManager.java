@@ -52,7 +52,7 @@ public class PostManager
     /**
      * Constructor for PostManager. PostManager may be Guice injected, or can be constructed by
      * hand. If it is created by Guice, the protected _injector field will be injected by Guice, and
-     * then every service method argument will have any transient {@link @Inject} members added by
+     * then every service method argument will have any transient {@link Inject} members added by
      * Guice after the object has been created.
      *
      * @param dispatchers A mapping of service id to the {@link PostDispatcher} that's responsible
@@ -80,9 +80,10 @@ public class PostManager
      * {@link HttpServletRequest} and {@link HttpServletResponse}.  The service call data is read
      * from the {@link HttpServletRequest}, which is assumed to be binary data encapsulated in a
      * {@link PostRequest} at the top level.  The method response is written to the
-     * {@link HttpServletResponse}, or a {@link RequestError} is sent if an exception occurred.  If
-     * the exception is a {@link PostException}, it is not logged on the server.  All other
-     * Exceptions are both sent to the client and logged as warnings with the Riposte logger {@Log}.
+     * {@link HttpServletResponse}, or a {@link StreamableError} is sent if an exception occurred.
+     * If * the exception is a {@link PostException}, it is not logged on the server.  All other
+     * Exceptions are both sent to the client and logged as warnings with the Riposte logger,
+     * {@link com.threerings.riposte.Log}.
      *
      * @param req The servlet request.
      * @param rsp The servlet response.

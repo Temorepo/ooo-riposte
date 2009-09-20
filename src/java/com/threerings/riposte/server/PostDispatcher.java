@@ -22,11 +22,12 @@ package com.threerings.riposte.server;
 
 /**
  * Riposte Service dispatchers must implement this method.  Given the method id and args array,
- * they are responsible for calling the correct service method on the Service implementor.
+ * they are responsible for calling the correct service method on the Service implementor.<br/><br/>
  *
  * The implementors of these interfaces are not usually written by hand - they are usually generated
- * by the genriposte ant task, defined in {@link GenRiposte}.  If this method is used, the service
- * interface is required to have a service id defined in a public static string:
+ * by the genriposte ant task, defined in {@link com.threerings.riposte.tools.GenRiposteTask}.  If
+ * this method is used, the service interface is required to have a service id defined in a public
+ * static string:<br/><br/>
  *
  * {@code public static final int SERVICE_ID = 1;}
  */
@@ -43,7 +44,8 @@ public interface PostDispatcher
      *
      * @throws Exception If the service method throws an exception, let it pass through here.
      *                   {@link PostManager} will catch the exception and send a
-     *                   {@link StreamableError} to the client with the exception's message.
+     *                   {@link com.threerings.riposte.data.StreamableError} to the client with the
+     *                   exception's message.
      */
     public Object dispatchRequest (int methodId, Object[] args)
         throws Exception;
