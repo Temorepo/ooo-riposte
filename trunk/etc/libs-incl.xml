@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- declares the libraries needed to build depot -->
 <project name="library-dependencies">
-  <fileset dir="${libs.dir.java}" id="riposte.libs">
+  <fileset dir="${libs.dir}" id="riposte.libs">
     <include name="ant.jar"/>
     <include name="google-collect.jar"/>
     <include name="samskivert.jar"/>
