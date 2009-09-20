@@ -1,0 +1,42 @@
+package $package {
+
+import com.threerings.riposte.client.PostListener;
+import com.threerings.riposte.data.PostMarshaller;
+import $spackage.${name}PostService;
+#foreach ($import in $imports)
+import $import;
+#end
+
+/**
+ * Provides the implementation of the <code>${name}Service</code> interface that marshalls the
+ * arguments and delivers the request to the service implementor on the server.
+ */
+public class ${name}Marshaller extends PostMarshaller
+    implements ${name}PostService
+{
+    public static const SERVICE_ID :int = ${serviceId};
+
+#foreach ($m in $methods)
+#if ($velocityCount > 1)
+
+#end
+    /** The method id used to dispatch <code>$m.method.name</code> requests. */
+    public static const $m.code :int = $velocityCount;
+
+    // from interface ${name}PostService
+    public function $m.method.name (#if ($m.hasArgs(false))$m.getASArgList(false), #{end}listener :PostListener = null) :void
+    {
+        var args :Array = [ $m.getASWrappedArgList(false) ];
+        if (listener != null) {
+            args.push(listener);
+        }
+        sendRequest($m.code, args);
+    }
+#end
+
+    override protected function getServiceId () :int
+    {
+        return SERVICE_ID;
+    }
+}
+}
