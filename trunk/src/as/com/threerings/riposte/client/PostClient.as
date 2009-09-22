@@ -202,7 +202,7 @@ public class PostClient
     protected var _serviceAddress :String;
     // PostService doesn't extend Hashable, but these are all singletons, so a DictionaryMap
     // is fine.
-    protected var _services :Map = Maps.newMapOf(PostService);
+    protected var _services :Map = Maps.newMapOf(Class);
     protected var _version :String;
 
     private static const log :Log = Log.getLog(PostClient);
