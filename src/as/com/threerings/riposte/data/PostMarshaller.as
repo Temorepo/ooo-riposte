@@ -52,7 +52,7 @@ public class PostMarshaller
      * Client-side marshallers are responsible for knowing their own service id, and for reporting
      * it here.
      */
-    protected function getServiceId () :int
+    public function getServiceId () :int
     {
         throw new Error("getServiceId() is abstract in PostMarshaller");
     }
