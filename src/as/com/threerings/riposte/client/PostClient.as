@@ -68,7 +68,7 @@ public class PostClient
      */
     public function registerService (clazz :Class, marshaller :PostMarshaller) :void
     {
-        if (!(clazz is PostService)) {
+        if (!ClassUtil.isAssignableAs(PostService, clazz)) {
             throw new ArgumentError(ClassUtil.getClassName(clazz) + " does not extend PostService");
         }
         if (!(marshaller is clazz)) {
