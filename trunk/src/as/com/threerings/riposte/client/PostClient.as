@@ -35,6 +35,7 @@ import com.threerings.riposte.data.PostMarshaller;
 import com.threerings.riposte.data.PostRequest;
 import com.threerings.riposte.data.StreamableError;
 
+import com.threerings.util.ClassUtil;
 import com.threerings.util.Log;
 import com.threerings.util.Map;
 import com.threerings.util.Maps;
@@ -67,6 +68,14 @@ public class PostClient
      */
     public function registerService (clazz :Class, marshaller :PostMarshaller) :void
     {
+        if (!(clazz is PostService)) {
+            throw new ArgumentError(ClassUtil.getClassName(clazz) + " does not extend PostService");
+        }
+        if (!(marshaller is clazz)) {
+            throw new ArgumentError(ClassUtil.getClassName(marshaller) + " does not implement " +
+                ClassUtil.getClassName(clazz));
+        }
+
         marshaller.init(this);
         _services.put(clazz, marshaller);
     }
