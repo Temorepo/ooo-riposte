@@ -56,16 +56,16 @@ public class PostManager
      * Guice after the object has been created.
      *
      * @param dispatchers A mapping of service id to the {@link PostDispatcher} that's responsible
-     * 				      for handling that service's RPC calls.
+     *                       for handling that service's RPC calls.
      * @param clientVersion {@link PostRequest} will send along a client-defined version string with
-     * 					    every request. If the client and server version strings don't match, a
-     *  				    {@link PostException} is called to notify the client that it is out of
-     *  				    date. If versioning is not required, client and server can both use null
-     *  			        for the version string.
+     *                         every request. If the client and server version strings don't match, a
+     *                      {@link PostException} is called to notify the client that it is out of
+     *                      date. If versioning is not required, client and server can both use null
+     *                      for the version string.
      */
     @Inject
-    public PostManager (Map<Integer, PostDispatcher> dispatchers,
-                       @Named("ClientVersion") String clientVersion)
+    public PostManager (@Named("RiposteDispatchers") Map<Integer, PostDispatcher> dispatchers,
+                        @Named("RiposteClientVersion") String clientVersion)
     {
         _clientVersion = clientVersion;
         if (dispatchers == null) {

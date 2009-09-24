@@ -35,8 +35,6 @@ import com.google.inject.Inject;
 import com.samskivert.util.ComparableArrayList;
 import com.samskivert.util.StringUtil;
 
-import com.samskivert.servlet.user.User;
-
 import com.threerings.presents.tools.ImportSet;
 import com.threerings.presents.tools.InvocationTask;
 
@@ -166,15 +164,16 @@ public class GenRiposteTask extends InvocationTask
         // replace inner classes with action script equivalents
         imports.translateInnerClasses();
 
-        // User is server-only
-        imports.remove(User.class);
-
-        // get rid of java.lang stuff and any remaining primitives
-        imports.removeGlobals();
+        // allow primitive types in service methods
+        imports.replace("[B", "flash.utils.ByteArray");
+        imports.replace("[I", "com.threerings.io.TypedArray");
 
         if (imports.removeAll("[L*") > 0) {
             imports.add("com.threerings.io.TypedArray");
         }
+
+        // get rid of java.lang stuff and any remaining primitives
+        imports.removeGlobals();
 
         // get rid of remaining arrays
         imports.removeArrays();
@@ -217,9 +216,6 @@ public class GenRiposteTask extends InvocationTask
 
         // replace inner classes with action script equivalents
         imports.translateInnerClasses();
-
-        // User is server-only
-        imports.remove(User.class);
 
         // replace primitive types with OOO types (required for unboxing)
         imports.replace("byte", "com.threerings.util.Byte");
