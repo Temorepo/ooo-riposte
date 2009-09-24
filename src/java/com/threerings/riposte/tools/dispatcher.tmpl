@@ -1,5 +1,7 @@
 package $package;
 
+import com.threerings.util.MethodProfiler;
+
 #foreach ($import in $imports)
 import $import;
 #end
@@ -14,9 +16,10 @@ public class ${name}Dispatcher
     implements PostDispatcher
 {
     @Inject
-    public ${name}Dispatcher (${name}Service service)
+    public ${name}Dispatcher (${name}Service service, MethodProfiler profiler)
     {
         _service = service;
+        _profiler = profiler;
     }
 
     @Override // documentation inherited
@@ -26,11 +29,19 @@ public class ${name}Dispatcher
         switch (methodId) {
 #foreach ($m in $methods)
         case ${m.code}:
-            #if (!$m.returnsVoid())return #{end}_service.${m.method.name}(
-                $m.getUnwrappedArgList(true)
-            );
-            #if ($m.returnsVoid())return null;
-#end
+            if (_profiler != null) {
+                _profiler.enter("${name}Service.${m.method.name}");
+            }
+            try {
+                #if (!$m.returnsVoid())return #{end}_service.${m.method.name}(
+                    $m.getUnwrappedArgList(true)
+                );
+#if ($m.returnsVoid())                return null;
+#end            } finally {
+                if (_profiler != null) {
+                    _profiler.exit("${name}Service.${m.method.name}");
+                }
+            }
 
 #end
         default:
@@ -43,4 +54,5 @@ public class ${name}Dispatcher
 #end
 
     protected ${name}Service _service;
+    protected MethodProfiler _profiler;
 }
