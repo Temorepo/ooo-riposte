@@ -49,6 +49,12 @@ import static com.threerings.riposte.Log.log;
 @Singleton
 public class PostManager
 {
+    /** The name used in the @Named annotation for the constructor's injected dispatcher map. */
+    public static final String DISPATCHERS = "RiposteDispatchers";
+
+    /** The name used in the @Named annotation for the constructor's injected client version */
+    public static final String CLIENT_VERSION = "RiposteClientVersion";
+
     /**
      * Constructor for PostManager. PostManager may be Guice injected, or can be constructed by
      * hand. If it is created by Guice, the protected _injector field will be injected by Guice, and
@@ -64,8 +70,8 @@ public class PostManager
      *                      for the version string.
      */
     @Inject
-    public PostManager (@Named("RiposteDispatchers") Map<Integer, PostDispatcher> dispatchers,
-                        @Named("RiposteClientVersion") String clientVersion)
+    public PostManager (@Named(DISPATCHERS) Map<Integer, PostDispatcher> dispatchers,
+                        @Named(CLIENT_VERSION) String clientVersion)
     {
         _clientVersion = clientVersion;
         if (dispatchers == null) {
