@@ -33,6 +33,7 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
+import com.samskivert.util.ObjectUtil;
 import com.threerings.io.ObjectInputStream;
 import com.threerings.io.ObjectOutputStream;
 
@@ -126,12 +127,11 @@ public class PostManager
         try {
             // require that they either both be null or that they .equals()
             String version = (String)ois.readObject();
-        	if ((_clientVersion == null && version != null)
-                	|| !_clientVersion.equals(version)) {
-            	log.warning("Version mismatch from client", "required",
-                    	_clientVersion, "supplied", version);
-            	throw new PostException(PostCodes.VERSION_MISMATCH);
-        	}
+            if (!ObjectUtil.equals(_clientVersion, version)) {
+                log.warning("Version mismatch from client", "required", _clientVersion,
+                    "supplied", version);
+                throw new PostException(PostCodes.VERSION_MISMATCH);
+            }
         } catch (IOException ioe) {
             log.warning("Exception encountered streaming the PostRequest", ioe);
             throw new PostException(PostCodes.STREAMING_ERROR);
@@ -139,7 +139,7 @@ public class PostManager
             log.warning("Exception encountered streaming the PostRequest", cnfe);
             throw new PostException(PostCodes.STREAMING_ERROR);
         }
-            
+
         PostRequest request = new PostRequest();
         try {
             ois.readBareObject(request);
