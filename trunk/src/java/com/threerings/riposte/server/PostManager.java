@@ -123,6 +123,23 @@ public class PostManager
     protected Object processServiceCall (ObjectInputStream ois)
         throws Exception
     {
+        try {
+            // require that they either both be null or that they .equals()
+            String version = (String)ois.readObject();
+        	if ((_clientVersion == null && version != null)
+                	|| !_clientVersion.equals(version)) {
+            	log.warning("Version mismatch from client", "required",
+                    	_clientVersion, "supplied", version);
+            	throw new PostException(PostCodes.VERSION_MISMATCH);
+        	}
+        } catch (IOException ioe) {
+            log.warning("Exception encountered streaming the PostRequest", ioe);
+            throw new PostException(PostCodes.STREAMING_ERROR);
+        } catch (ClassNotFoundException cnfe) {
+            log.warning("Exception encountered streaming the PostRequest", cnfe);
+            throw new PostException(PostCodes.STREAMING_ERROR);
+        }
+            
         PostRequest request = new PostRequest();
         try {
             ois.readBareObject(request);
@@ -135,15 +152,6 @@ public class PostManager
             log.warning("PostRequest has extra bytes", "extra",
                     ois.available(), "request", request);
             throw new PostException(PostCodes.STREAMING_ERROR);
-        }
-
-        // require that they either both be null or that they .equals()
-        String reqVersion = request.getVersion();
-        if ((_clientVersion == null && reqVersion != null)
-                || !_clientVersion.equals(reqVersion)) {
-            log.warning("Version mismatch from client", "required",
-                    _clientVersion, "supplied", reqVersion);
-            throw new PostException(PostCodes.VERSION_MISMATCH);
         }
 
         int serviceId = request.getServiceId();
