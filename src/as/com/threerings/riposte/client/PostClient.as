@@ -121,7 +121,8 @@ public class PostClient
 
         var bytes :ByteArray = new ByteArray();
         var oos :ObjectOutputStream = new ObjectOutputStream(bytes);
-        oos.writeBareObject(new PostRequest(serviceId, methodId, args, _version));
+        oos.writeObject(_version);
+        oos.writeBareObject(new PostRequest(serviceId, methodId, args));
         url.data = bytes;
 
         try {

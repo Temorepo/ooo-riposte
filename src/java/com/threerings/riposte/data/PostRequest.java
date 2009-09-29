@@ -60,27 +60,14 @@ public class PostRequest
         return _args;
     }
 
-    /**
-     * Get the version string for this RPC call.  Client and server should both hold a current RPC
-     * version string.  If versioning is not required, client and server can simply use null in
-     * this field.
-     *
-     * @return the version of the client sending this request.
-     */
-    public String getVersion ()
-    {
-        return _version;
-    }
-
     @Override
     public String toString ()
     {
-        return "PostRequest [service=" + _serviceId + ", method=" + _methodId + ", version=" +
-            _version + ", args=" + _args + "]";
+        return "PostRequest [service=" + _serviceId + ", method=" + _methodId + ", args=" +
+            _args + "]";
     }
 
     protected int _serviceId;
     protected int _methodId;
     protected Object[] _args;
-    protected String _version;
 }

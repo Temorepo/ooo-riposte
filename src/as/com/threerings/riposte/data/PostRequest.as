@@ -31,12 +31,11 @@ import com.threerings.io.Streamable;
 public class PostRequest
     implements Streamable
 {
-    public function PostRequest (serviceId :int, methodId :int, args :Array, version :String)
+    public function PostRequest (serviceId :int, methodId :int, args :Array)
     {
         _serviceId = serviceId;
         _methodId = methodId;
         _args = args;
-        _version = version;
     }
 
     public function getServiceId () :int
@@ -59,7 +58,6 @@ public class PostRequest
         out.writeInt(_serviceId);
         out.writeInt(_methodId);
         out.writeField(_args);
-        out.writeField(_version);
     }
 
     public function readObject (ins :ObjectInputStream) :void
@@ -70,6 +68,5 @@ public class PostRequest
     protected var _serviceId :int;
     protected var _methodId :int;
     protected var _args :Array;
-    protected var _version :String;
 }
 }
