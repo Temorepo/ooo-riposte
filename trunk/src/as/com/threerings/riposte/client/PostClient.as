@@ -32,7 +32,6 @@ import com.threerings.io.ObjectInputStream;
 import com.threerings.io.ObjectOutputStream;
 
 import com.threerings.riposte.data.PostMarshaller;
-import com.threerings.riposte.data.PostRequest;
 import com.threerings.riposte.data.StreamableError;
 
 import com.threerings.util.ClassUtil;
@@ -122,7 +121,9 @@ public class PostClient
         var bytes :ByteArray = new ByteArray();
         var oos :ObjectOutputStream = new ObjectOutputStream(bytes);
         oos.writeObject(_version);
-        oos.writeBareObject(new PostRequest(serviceId, methodId, args));
+        oos.writeInt(serviceId);
+        oos.writeInt(methodId);
+        oos.writeObject(args);
         url.data = bytes;
 
         try {
