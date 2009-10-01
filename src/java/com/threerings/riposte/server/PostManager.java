@@ -38,7 +38,6 @@ import com.threerings.io.ObjectInputStream;
 import com.threerings.io.ObjectOutputStream;
 
 import com.threerings.riposte.data.PostCodes;
-import com.threerings.riposte.data.PostRequest;
 import com.threerings.riposte.data.StreamableError;
 
 import static com.threerings.riposte.Log.log;
@@ -124,6 +123,8 @@ public class PostManager
     protected Object processServiceCall (ObjectInputStream ois)
         throws Exception
     {
+        int serviceId;
+        int methodId;
         try {
             // require that they either both be null or that they .equals()
             String version = (String)ois.readObject();
@@ -132,47 +133,47 @@ public class PostManager
                     "supplied", version);
                 throw new PostException(PostCodes.VERSION_MISMATCH);
             }
+
+            serviceId = ois.readInt();
+            methodId = ois.readInt();
         } catch (IOException ioe) {
-            log.warning("Exception encountered streaming the PostRequest", ioe);
+            log.warning("Exception encountered streaming the pre-args values", ioe);
             throw new PostException(PostCodes.STREAMING_ERROR);
         } catch (ClassNotFoundException cnfe) {
-            log.warning("Exception encountered streaming the PostRequest", cnfe);
+            log.warning("Exception encountered streaming the pre-args values", cnfe);
             throw new PostException(PostCodes.STREAMING_ERROR);
         }
 
-        PostRequest request = new PostRequest();
+        Object[] args;
         try {
-            ois.readBareObject(request);
+            args = (Object[]) ois.readObject();
         } catch (Exception e) {
-            log.warning("Exception encountered streaming the PostRequest", e);
+            log.warning("Exception encountered streaming the args", "serviceId", serviceId,
+                "methodId", methodId, e);
             throw new PostException(PostCodes.STREAMING_ERROR);
         }
 
         if (ois.available() != 0) {
             log.warning("PostRequest has extra bytes", "extra",
-                    ois.available(), "request", request);
+                    ois.available(), "serviceId", serviceId, "methodId", methodId);
             throw new PostException(PostCodes.STREAMING_ERROR);
         }
 
-        int serviceId = request.getServiceId();
         PostDispatcher dispatcher = _dispatchers.get(serviceId);
         if (dispatcher == null) {
-            log.warning("Dispatcher not found for service", "serviceId",
-                    serviceId);
+            log.warning("Dispatcher not found for service", "serviceId", serviceId);
             throw new PostException(PostCodes.STREAMING_ERROR);
         }
 
-        Object[] args = request.getArgs();
         if (_injector != null) {
-            // Inject members into the args that were streamed over the wire,
-            // only if we're running
+            // Inject members into the args that were streamed over the wire, only if we're running
             // in a Guice environment (_injector will be null otherwise)
             for (Object arg : args) {
                 _injector.injectMembers(arg);
             }
         }
 
-        return dispatcher.dispatchRequest(request.getMethodId(), args);
+        return dispatcher.dispatchRequest(methodId, args);
     }
 
     protected void sendResult (Object result, ObjectOutputStream oos)
