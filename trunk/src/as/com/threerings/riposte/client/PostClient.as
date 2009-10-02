@@ -120,7 +120,7 @@ public class PostClient
 
         var bytes :ByteArray = new ByteArray();
         var oos :ObjectOutputStream = new ObjectOutputStream(bytes);
-        oos.writeObject(_version);
+        oos.writeUTF(_version);
         oos.writeInt(serviceId);
         oos.writeInt(methodId);
         oos.writeObject(args);

@@ -127,7 +127,7 @@ public class PostManager
         int methodId;
         try {
             // require that they either both be null or that they .equals()
-            String version = (String)ois.readObject();
+            String version = ois.readUTF();
             if (!ObjectUtil.equals(_clientVersion, version)) {
                 log.warning("Version mismatch from client", "required", _clientVersion,
                     "supplied", version);
@@ -138,9 +138,6 @@ public class PostManager
             methodId = ois.readInt();
         } catch (IOException ioe) {
             log.warning("Exception encountered streaming the pre-args values", ioe);
-            throw new PostException(PostCodes.STREAMING_ERROR);
-        } catch (ClassNotFoundException cnfe) {
-            log.warning("Exception encountered streaming the pre-args values", cnfe);
             throw new PostException(PostCodes.STREAMING_ERROR);
         }
 
