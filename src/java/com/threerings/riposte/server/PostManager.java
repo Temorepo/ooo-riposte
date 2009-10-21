@@ -20,6 +20,9 @@
 
 package com.threerings.riposte.server;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.Map;
 
@@ -34,6 +37,7 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 import com.samskivert.util.ObjectUtil;
+import com.samskivert.util.StringUtil;
 import com.threerings.io.ObjectInputStream;
 import com.threerings.io.ObjectOutputStream;
 
@@ -99,13 +103,30 @@ public class PostManager
     public void doServiceCall (HttpServletRequest req, HttpServletResponse rsp)
         throws IOException
     {
-        ObjectInputStream ois = new ObjectInputStream(req.getInputStream());
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        InputStream in = req.getInputStream();
+        try {
+            int count;
+            byte[] buf = new byte[1024];
+            while (-1 < (count = in.read(buf))) {
+                bos.write(buf, 0, count);
+            }
+        } finally {
+            in.close();
+        }
+        byte[] bytesFromClient = bos.toByteArray();
+        bos = null;
+
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytesFromClient));
         ObjectOutputStream oos = new ObjectOutputStream(rsp.getOutputStream());
 
         try {
             sendResult(processServiceCall(ois), oos);
 
         } catch (PostException pe) {
+            if (PostCodes.STREAMING_ERROR.equals(pe.getMessage())) {
+                log.warning("For debugging..", "inBytes", StringUtil.hexlate(bytesFromClient));
+            }
             sendException(pe, oos);
 
         } catch (Exception e) {
