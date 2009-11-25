@@ -187,7 +187,9 @@ public class PostManager
             // Inject members into the args that were streamed over the wire, only if we're running
             // in a Guice environment (_injector will be null otherwise)
             for (Object arg : args) {
-                _injector.injectMembers(arg);
+                if (arg != null) {
+                    _injector.injectMembers(arg);
+                }
             }
         }
 
