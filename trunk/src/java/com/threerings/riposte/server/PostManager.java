@@ -120,8 +120,11 @@ public class PostManager
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytesFromClient));
         ObjectOutputStream oos = new ObjectOutputStream(rsp.getOutputStream());
 
+        String methodName = "UNKNOWN METHOD";
         try {
-            sendResult(processServiceCall(ois), oos);
+            ServiceMethodInvoker invoker = getInvoker(ois);
+            methodName = invoker.getMethodName();
+            sendResult(invoker.invoke(), oos);
 
         } catch (PostException pe) {
             if (PostCodes.STREAMING_ERROR.equals(pe.getMessage())) {
@@ -130,9 +133,9 @@ public class PostManager
             sendException(pe, oos);
 
         } catch (Exception e) {
-            // accepting any exception so that Riposte can share services with
-            // GWT
-            log.error("doServiceCall failure", e);
+            // accepting any exception so that Riposte can share services with GWT.  Include the
+            // method name in the main log line so that it gets picked up by the log summarizer
+            log.error("doServiceCall failure in " + methodName, e);
             sendException(e, oos);
 
         } finally {
@@ -141,7 +144,7 @@ public class PostManager
         }
     }
 
-    protected Object processServiceCall (ObjectInputStream ois)
+    protected ServiceMethodInvoker getInvoker (ObjectInputStream ois)
         throws Exception
     {
         int serviceId;
@@ -193,7 +196,7 @@ public class PostManager
             }
         }
 
-        return dispatcher.dispatchRequest(methodId, args);
+        return new ServiceMethodInvoker(dispatcher, methodId, args);
     }
 
     protected void sendResult (Object result, ObjectOutputStream oos)
@@ -206,6 +209,31 @@ public class PostManager
             throws IOException
     {
         oos.writeObject(new StreamableError(e.getMessage()));
+    }
+
+    protected static class ServiceMethodInvoker
+    {
+        public final PostDispatcher dispatcher;
+        public final int methodId;
+        public final Object[] args;
+
+        public ServiceMethodInvoker (PostDispatcher dispatcher, int methodId, Object[] args)
+        {
+            this.dispatcher = dispatcher;
+            this.methodId = methodId;
+            this.args = args;
+        }
+
+        public Object invoke ()
+            throws Exception
+        {
+            return dispatcher.dispatchRequest(methodId, args);
+        }
+
+        public String getMethodName ()
+        {
+            return dispatcher.getMethodName(methodId);
+        }
     }
 
     protected Map<Integer, PostDispatcher> _dispatchers;

@@ -49,4 +49,10 @@ public interface PostDispatcher
      */
     public Object dispatchRequest (int methodId, Object[] args)
         throws Exception;
+
+    /**
+     * Called by RiposteManager to increase the accuracy of error logs in a generic
+     * catch (Exception) block
+     */
+    public String getMethodName (int methodId);
 }
