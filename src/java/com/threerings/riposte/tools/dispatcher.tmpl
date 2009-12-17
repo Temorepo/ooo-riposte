@@ -49,6 +49,17 @@ public class ${name}Dispatcher
         }
     }
 
+    @Override // documentation inherited
+    public String getMethodName (int methodId)
+    {
+        switch (methodId) {
+#foreach ($m in $methods)
+        case ${m.code}: return "${name}Dispatcher::${m.method.name}";
+#end
+        default: return "${name}Dispatcher [Unknown method id " + methodId + "]";
+        }
+    }
+
 #foreach ($m in $methods)
     protected static final int ${m.code} = ${velocityCount};
 #end
