@@ -33,6 +33,9 @@ public class ${name}Dispatcher
                 _profiler.enter("${name}Service.${m.method.name}");
             }
             try {
+#if ($m.containsGenericParameters())#foreach ($cast in $m.getGenericCasts())
+                @SuppressWarnings("unchecked") $cast
+#end#end
                 #if (!$m.returnsVoid())return #{end}_service.${m.method.name}(
                     $m.getUnwrappedArgList(true)
                 );
