@@ -25,14 +25,19 @@ import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.List;
 
 import org.apache.velocity.VelocityContext;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.inject.Inject;
+import com.google.inject.internal.Lists;
 
 import com.samskivert.util.ComparableArrayList;
+import com.samskivert.util.GenUtil;
 import com.samskivert.util.StringUtil;
 
 import com.threerings.presents.tools.ImportSet;
@@ -49,15 +54,49 @@ public class GenRiposteTask extends InvocationTask
 {
     public class PostServiceMethod extends ServiceMethod
     {
-        public PostServiceMethod(Method method, ImportSet imports)
+        public PostServiceMethod (Method method, ImportSet imports)
         {
             super(method, imports);
+
+            Type[] types = method.getGenericParameterTypes();
+            for (int ii = 0; ii < types.length; ii++) {
+                if (types[ii] instanceof ParameterizedType) {
+                    _parameterized.add(ii);
+                }
+            }
         }
 
         public boolean returnsVoid ()
         {
             return method.getReturnType() == Void.TYPE;
         }
+
+        public boolean containsGenericParameters ()
+        {
+            return _parameterized.size() > 0;
+        }
+
+        public List<String> getGenericCasts ()
+        {
+            List<String> casts = Lists.newArrayList();
+            Type[] types = method.getGenericParameterTypes();
+            for (int idx : _parameterized) {
+                casts.add(GenUtil.simpleName(types[idx]) + " arg" + idx + " = " +
+                    super.unboxArgument(types[idx], idx, true) + ";");
+            }
+            return casts;
+        }
+
+        @Override protected String unboxArgument (Type type, int index, boolean listenerMode)
+        {
+            if (listenerMode && type instanceof ParameterizedType) {
+                return "arg" + index;
+            } else {
+                return super.unboxArgument(type, index, listenerMode);
+            }
+        }
+
+        protected List<Integer> _parameterized = Lists.newArrayList();
     }
 
     /**
