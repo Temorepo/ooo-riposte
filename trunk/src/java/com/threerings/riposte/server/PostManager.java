@@ -135,7 +135,7 @@ public class PostManager
         } catch (Exception e) {
             // accepting any exception so that Riposte can share services with GWT.  Include the
             // method name in the main log line so that it gets picked up by the log summarizer
-            log.error("doServiceCall failure in " + methodName, e);
+            logServiceException(e, methodName);
             sendException(e, oos);
 
         } finally {
@@ -203,6 +203,15 @@ public class PostManager
         throws IOException
     {
         oos.writeObject(result);
+    }
+
+    /**
+     * Overridable method so that installations can customize the error logging a bit with e.g.
+     * player account info.
+     */
+    protected void logServiceException (Exception e, String methodName)
+    {
+        log.error("doServiceCall failure in " + methodName, e);
     }
 
     protected void sendException (Exception e, ObjectOutputStream oos)
