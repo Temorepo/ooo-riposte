@@ -126,27 +126,43 @@ public class PostClient
         oos.writeObject(args);
         url.data = bytes;
 
-        try {
-            var loader :URLLoader = new URLLoader(url);
-            var eventListener :Function;
-            eventListener = function (event :Event) :void {
-                loader.removeEventListener(Event.COMPLETE, eventListener);
-                loader.removeEventListener(IOErrorEvent.IO_ERROR, eventListener);
+        _queue.push(function () :void {
+            try {
+                var loader :URLLoader = new URLLoader(url);
+                function eventListener (event :Event) :void {
+                    loader.removeEventListener(Event.COMPLETE, eventListener);
+                    loader.removeEventListener(IOErrorEvent.IO_ERROR, eventListener);
 
-                if (event is IOErrorEvent) {
-                    listenersFailed(listeners, (event as IOErrorEvent).text);
+                    if (event is IOErrorEvent) {
+                        listenersFailed(listeners, (event as IOErrorEvent).text);
 
-                } else {
-                    loaderComplete(listeners, event);
-                }
-            };
-            loader.addEventListener(Event.COMPLETE, eventListener);
-            loader.addEventListener(IOErrorEvent.IO_ERROR, eventListener);
-            loader.dataFormat = URLLoaderDataFormat.BINARY;
+                    } else {
+                        loaderComplete(listeners, event);
+                    }
+                    _postIsPending = false;
+                    maybeSendNextRequest();
 
-        } catch (err :Error) {
-            listenersFailed(listeners, err.toString());
+                };
+                loader.addEventListener(Event.COMPLETE, eventListener);
+                loader.addEventListener(IOErrorEvent.IO_ERROR, eventListener);
+                loader.dataFormat = URLLoaderDataFormat.BINARY;
+
+            } catch (err :Error) {
+                listenersFailed(listeners, err.toString());
+                _postIsPending = false;
+                maybeSendNextRequest();
+            }
+        });
+        maybeSendNextRequest();
+    }
+
+    protected function maybeSendNextRequest() :void
+    {
+        if (_postIsPending || _queue.length == 0) {
+            return;
         }
+        _queue.shift()();
+        _postIsPending = true;
     }
 
     protected function loaderComplete (listeners :Array, event :Event) :void
@@ -206,6 +222,8 @@ public class PostClient
     // is fine.
     protected var _services :Map = Maps.newMapOf(Class);
     protected var _version :String;
+    protected var _queue :Array = [];
+    protected var _postIsPending :Boolean;
 
     private static const log :Log = Log.getLog(PostClient);
 }
