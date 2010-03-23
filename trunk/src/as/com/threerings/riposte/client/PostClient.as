@@ -82,9 +82,9 @@ public class PostClient
     /**
      * Get the implementor of the given service.
      */
-    public function getService (clazz :Class) :PostService
+    public function getService (clazz :Class) :*
     {
-        return _services.get(clazz) as PostService;
+        return _services.get(clazz);
     }
 
     /**
@@ -92,7 +92,7 @@ public class PostClient
      *
      * @throws Error if the service has not been registered with this client.
      */
-    public function requireService (clazz :Class) :PostService
+    public function requireService (clazz :Class) :*
     {
         var isvc :PostService = getService(clazz);
         if (isvc == null) {
