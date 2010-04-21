@@ -59,6 +59,17 @@ public class PostClient
     }
 
     /**
+     * Shuts down the PostClient. Any service requests made after shutdown will fail immediately.
+     */
+    public function shutdown () :void
+    {
+        if (!_shutdown) {
+            _shutdown = true;
+            _queue = null;
+        }
+    }
+
+    /**
      * Configure a service marshaller.
      *
      * @param clazz The service class that the marshaller implements.  The service class should be
@@ -107,9 +118,6 @@ public class PostClient
      */
     public function sendRequest (serviceId :int, methodId :int, args :Array) :void
     {
-        var url :URLRequest = new URLRequest(_serviceAddress);
-        url.method = URLRequestMethod.POST;
-
         var listeners :Array = [];
         for (var ii :int = 0; ii < args.length; ii++) {
             if (args[ii] is PostListener) {
@@ -117,6 +125,14 @@ public class PostClient
                 ii--;
             }
         }
+
+        if (_shutdown) {
+            listenersFailed(listeners, "PostClient has been shut down");
+            return;
+        }
+
+        var url :URLRequest = new URLRequest(_serviceAddress);
+        url.method = URLRequestMethod.POST;
 
         var bytes :ByteArray = new ByteArray();
         var oos :ObjectOutputStream = new ObjectOutputStream(bytes);
@@ -133,9 +149,10 @@ public class PostClient
                     loader.removeEventListener(Event.COMPLETE, eventListener);
                     loader.removeEventListener(IOErrorEvent.IO_ERROR, eventListener);
 
-                    if (event is IOErrorEvent) {
+                    if (_shutdown) {
+                        listenersFailed(listeners, "PostClient has been shut down");
+                    } else if (event is IOErrorEvent) {
                         listenersFailed(listeners, (event as IOErrorEvent).text);
-
                     } else {
                         loaderComplete(listeners, event);
                     }
@@ -158,7 +175,7 @@ public class PostClient
 
     protected function maybeSendNextRequest() :void
     {
-        if (_postIsPending || _queue.length == 0) {
+        if (_shutdown || _postIsPending || _queue.length == 0) {
             return;
         }
         _queue.shift()();
@@ -198,7 +215,7 @@ public class PostClient
         }
     }
 
-    protected function listenersProcessed (listeners :Array, result :Object) :void
+    protected static function listenersProcessed (listeners :Array, result :Object) :void
     {
         for each (var listener :PostListener in listeners) {
             if (listener is PostConfirmListener) {
@@ -210,7 +227,7 @@ public class PostClient
         }
     }
 
-    protected function listenersFailed (listeners :Array, cause :String) :void
+    protected static function listenersFailed (listeners :Array, cause :String) :void
     {
         for each (var listener :PostListener in listeners) {
             listener.requestFailed(cause);
@@ -224,6 +241,7 @@ public class PostClient
     protected var _version :String;
     protected var _queue :Array = [];
     protected var _postIsPending :Boolean;
+    protected var _shutdown :Boolean;
 
     private static const log :Log = Log.getLog(PostClient);
 }
