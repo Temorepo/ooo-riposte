@@ -20,6 +20,15 @@
 
 package com.threerings.riposte.client {
 
+import com.threerings.io.ObjectInputStream;
+import com.threerings.io.ObjectOutputStream;
+import com.threerings.riposte.data.PostMarshaller;
+import com.threerings.riposte.data.StreamableError;
+import com.threerings.util.ClassUtil;
+import com.threerings.util.Log;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
+
 import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.net.URLLoader;
@@ -27,17 +36,6 @@ import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
 import flash.net.URLRequestMethod;
 import flash.utils.ByteArray;
-
-import com.threerings.io.ObjectInputStream;
-import com.threerings.io.ObjectOutputStream;
-
-import com.threerings.riposte.data.PostMarshaller;
-import com.threerings.riposte.data.StreamableError;
-
-import com.threerings.util.ClassUtil;
-import com.threerings.util.Log;
-import com.threerings.util.Map;
-import com.threerings.util.Maps;
 
 /**
  * The main client class.
@@ -60,12 +58,17 @@ public class PostClient
 
     /**
      * Shuts down the PostClient. Any service requests made after shutdown will fail immediately.
+     *
+     * @param allowQueueToComplete if true, allows the queue of pending service requests to
+     * continue processing.
      */
-    public function shutdown () :void
+    public function shutdown (allowQueueToComplete :Boolean) :void
     {
         if (!_shutdown) {
             _shutdown = true;
-            _queue = null;
+            if (!allowQueueToComplete) {
+                _queue = [];
+            }
         }
     }
 
@@ -149,9 +152,7 @@ public class PostClient
                     loader.removeEventListener(Event.COMPLETE, eventListener);
                     loader.removeEventListener(IOErrorEvent.IO_ERROR, eventListener);
 
-                    if (_shutdown) {
-                        listenersFailed(listeners, "PostClient has been shut down");
-                    } else if (event is IOErrorEvent) {
+                    if (event is IOErrorEvent) {
                         listenersFailed(listeners, (event as IOErrorEvent).text);
                     } else {
                         loaderComplete(listeners, event);
@@ -175,7 +176,7 @@ public class PostClient
 
     protected function maybeSendNextRequest() :void
     {
-        if (_shutdown || _postIsPending || _queue.length == 0) {
+        if (_postIsPending || _queue.length == 0) {
             return;
         }
         _queue.shift()();
