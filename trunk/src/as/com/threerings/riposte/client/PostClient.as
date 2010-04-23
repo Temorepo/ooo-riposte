@@ -50,10 +50,12 @@ public class PostClient
      *                an error will be thrown on the server unless the server is also configured
      *                with a null version.
      */
-    public function PostClient (serviceAddress :String, version :String = null)
+    public function PostClient (serviceAddress :String, version :String = null,
+        defaultListener :PostListener = null)
     {
         _serviceAddress = serviceAddress;
         _version = version;
+        _defaultListener = defaultListener;
     }
 
     /**
@@ -127,6 +129,9 @@ public class PostClient
                 listeners.push(args.splice(ii, 1)[0]);
                 ii--;
             }
+        }
+        if (listeners.length == 0 && _defaultListener != null) {
+            listeners.push(_defaultListener);
         }
 
         if (_shutdown) {
@@ -242,6 +247,7 @@ public class PostClient
     protected var _version :String;
     protected var _queue :Array = [];
     protected var _postIsPending :Boolean;
+    protected var _defaultListener :PostListener;
     protected var _shutdown :Boolean;
 
     private static const log :Log = Log.getLog(PostClient);
