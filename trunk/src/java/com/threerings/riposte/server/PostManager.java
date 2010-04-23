@@ -128,7 +128,8 @@ public class PostManager
 
         } catch (PostException pe) {
             if (PostCodes.STREAMING_ERROR.equals(pe.getMessage())) {
-                log.warning("For debugging..", "inBytes", StringUtil.hexlate(bytesFromClient));
+                log.warning("Got streaming error from client", "inBytes",
+                    StringUtil.hexlate(bytesFromClient));
             }
             sendException(pe, oos);
 
