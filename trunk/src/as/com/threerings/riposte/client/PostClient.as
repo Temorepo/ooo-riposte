@@ -20,16 +20,6 @@
 
 package com.threerings.riposte.client {
 
-import com.threerings.io.ObjectInputStream;
-import com.threerings.io.ObjectOutputStream;
-import com.threerings.riposte.data.PostMarshaller;
-import com.threerings.riposte.data.StreamableError;
-import com.threerings.util.Boxed;
-import com.threerings.util.ClassUtil;
-import com.threerings.util.Log;
-import com.threerings.util.Map;
-import com.threerings.util.Maps;
-
 import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.net.URLLoader;
@@ -37,6 +27,18 @@ import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
 import flash.net.URLRequestMethod;
 import flash.utils.ByteArray;
+
+import com.threerings.io.ObjectInputStream;
+import com.threerings.io.ObjectOutputStream;
+
+import com.threerings.util.Boxed;
+import com.threerings.util.ClassUtil;
+import com.threerings.util.Log;
+import com.threerings.util.Map;
+import com.threerings.util.Maps;
+
+import com.threerings.riposte.data.PostMarshaller;
+import com.threerings.riposte.data.StreamableError;
 
 /**
  * The main client class.
