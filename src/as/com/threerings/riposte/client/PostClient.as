@@ -24,6 +24,7 @@ import com.threerings.io.ObjectInputStream;
 import com.threerings.io.ObjectOutputStream;
 import com.threerings.riposte.data.PostMarshaller;
 import com.threerings.riposte.data.StreamableError;
+import com.threerings.util.Boxed;
 import com.threerings.util.ClassUtil;
 import com.threerings.util.Log;
 import com.threerings.util.Map;
@@ -217,6 +218,9 @@ public class PostClient
             listenersFailed(listeners, (result as StreamableError).getCause());
 
         } else {
+            if (result is Boxed) {
+                result = Boxed(result).unbox();
+            }
             listenersProcessed(listeners, result);
         }
     }
