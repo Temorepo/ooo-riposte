@@ -10,7 +10,7 @@
     <include name="guice.jar"/>
     <include name="narya-base.jar"/>
     <include name="narya-tools.jar"/>
-    <include name="ooolib.swc"/>
+    <include name="aspirin.swc"/>
     <include name="naryalib.swc"/>
   </fileset>
 </project>
