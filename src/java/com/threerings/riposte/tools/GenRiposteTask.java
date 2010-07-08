@@ -144,7 +144,7 @@ public class GenRiposteTask extends InvocationTask
             System.out.println("Generating dispatcher");
         }
 
-        String name = StringUtil.replace(sdesc.sname, "Service", "");
+        String name = sdesc.sname.replace("Service", "");
 
         // start with the imports required by service methods
         ImportSet imports = sdesc.imports.clone();
@@ -181,7 +181,7 @@ public class GenRiposteTask extends InvocationTask
 
         // determine the path to our dispatcher file
         String mpath = source.getPath();
-        mpath = StringUtil.replace(mpath, "Service", "Dispatcher");
+        mpath = mpath.replace("Service", "Dispatcher");
 
         writeFile(mpath, sw.toString());
     }
@@ -194,8 +194,8 @@ public class GenRiposteTask extends InvocationTask
         }
 
         String sname = sdesc.sname;
-        String name = StringUtil.replace(sname, "Service", "");
-        String spackage = StringUtil.replace(sdesc.spackage, ".server", ".client");
+        String name = sname.replace("Service", "");
+        String spackage = sdesc.spackage.replace(".server", ".client");
 
         // start with the service method imports
         ImportSet imports = sdesc.imports.clone();
@@ -228,7 +228,7 @@ public class GenRiposteTask extends InvocationTask
 
         // make sure our post service directory exists
         String spath = spackage.replace('.', File.separatorChar);
-        spath = StringUtil.replace(spath, "/server/", "/client/");
+        spath = spath.replace("/server/", "/client/");
         new File(_asroot + File.separator + spath).mkdirs();
 
         // generate the post service file
@@ -246,9 +246,9 @@ public class GenRiposteTask extends InvocationTask
         }
 
         String sname = sdesc.sname;
-        String name = StringUtil.replace(sname, "Service", "");
-        String mpackage = StringUtil.replace(sdesc.spackage, ".server", ".data");
-        String spackage = StringUtil.replace(sdesc.spackage, ".server", ".client");
+        String name = sname.replace("Service", "");
+        String mpackage = sdesc.spackage.replace(".server", ".data");
+        String spackage = sdesc.spackage.replace(".server", ".client");
 
         // start with the service method imports
         ImportSet imports = sdesc.imports.clone();
@@ -287,7 +287,7 @@ public class GenRiposteTask extends InvocationTask
 
         // make sure our post service directory exists
         String spath = mpackage.replace('.', File.separatorChar);
-        spath = StringUtil.replace(spath, "/server/", "/data/");
+        spath = spath.replace("/server/", "/data/");
         new File(_asroot + File.separator + spath).mkdirs();
 
         // generate the post service file
