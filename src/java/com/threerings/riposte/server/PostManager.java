@@ -29,6 +29,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.base.PostManager;
 import com.google.common.collect.Maps;
 
 import com.google.inject.Inject;
@@ -36,7 +37,6 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
-import com.samskivert.util.ObjectUtil;
 import com.samskivert.util.StringUtil;
 import com.threerings.io.ObjectInputStream;
 import com.threerings.io.ObjectOutputStream;
@@ -153,7 +153,7 @@ public class PostManager
         try {
             // require that they either both be null or that they .equals()
             String version = ois.readUTF();
-            if (!ObjectUtil.equals(_clientVersion, version)) {
+            if (!Objects.equal(_clientVersion, version)) {
                 log.warning("Version mismatch from client", "required", _clientVersion,
                     "supplied", version);
                 throw new PostException(PostCodes.VERSION_MISMATCH);
