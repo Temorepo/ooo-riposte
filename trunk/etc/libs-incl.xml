@@ -3,7 +3,7 @@
 <project name="library-dependencies">
   <fileset dir="${libs.dir}" id="riposte.libs">
     <include name="ant.jar"/>
-    <include name="google-collect.jar"/>
+    <include name="guava.jar"/>
     <include name="samskivert.jar"/>
     <include name="velocity-1.5-dev.jar"/>
     <include name="servlet-api.jar"/>
