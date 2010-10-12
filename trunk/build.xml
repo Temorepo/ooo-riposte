@@ -126,11 +126,13 @@
         <exclude name="com/threerings/riposte/tools/**"/>
         <exclude name="com/threerings/riposte/tools.properties"/>
       </fileset>
-    <jar destfile="${deploy.dir}/${lib.name}-tools.jar" basedir="${classes.dir}">
+    <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"
+             classpathref="classpath"/>
+    <jarjar destfile="${deploy.dir}/${lib.name}-tools.jar">
       <fileset dir="${classes.dir}"/>
-      <zipfileset src="${deploy.dir}/lib/samskivert.jar"/>
-      <zipfileset src="${deploy.dir}/lib/velocity-1.5-dev.jar"/>
       <zipfileset src="${deploy.dir}/lib/narya-tools.jar"/>
-    </jar>
+      <rule pattern="com.google.**" result="cgc.@1"/>
+      <rule pattern="com.samskivert.**" result="cs.@1"/>
+    </jarjar>
   </target>
 </project>
