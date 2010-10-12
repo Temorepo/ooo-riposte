@@ -121,11 +121,12 @@
 
   <target name="dist" depends="prepare,compile,aslib"
           description="Compiles the code and builds our jar file.">
-    <jar destfile="${deploy.dir}/${lib.name}.jar" basedir="${classes.dir}"/>
+    <jar destfile="${deploy.dir}/${lib.name}.jar">
       <fileset dir="${classes.dir}">
         <exclude name="com/threerings/riposte/tools/**"/>
         <exclude name="com/threerings/riposte/tools.properties"/>
       </fileset>
+    </jar>
     <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"
              classpathref="classpath"/>
     <jarjar destfile="${deploy.dir}/${lib.name}-tools.jar">
