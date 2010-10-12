@@ -29,8 +29,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import org.apache.velocity.VelocityContext;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -170,20 +168,15 @@ public class GenRiposteTask extends InvocationTask
         // remove imports in our own package
         imports.removeSamePackage(sdesc.spackage);
 
-        VelocityContext ctx = new VelocityContext();
-        ctx.put("name", name);
-        ctx.put("package", sdesc.spackage);
-        ctx.put("methods", sdesc.methods);
-        ctx.put("imports", imports.toList());
-
-        StringWriter sw = new StringWriter();
-        _velocity.mergeTemplate(DISPATCHER_TMPL, "UTF-8", ctx, sw);
-
         // determine the path to our dispatcher file
         String mpath = source.getPath();
         mpath = mpath.replace("Service", "Dispatcher");
 
-        writeFile(mpath, sw.toString());
+        writeFile(mpath, mergeTemplate(DISPATCHER_TMPL,
+                                       "name", name,
+                                       "package", sdesc.spackage,
+                                       "methods", sdesc.methods,
+                                       "imports", imports.toList()));
     }
 
     protected void generatePostService (File source, ServiceDescription sdesc)
@@ -220,12 +213,6 @@ public class GenRiposteTask extends InvocationTask
         // remove imports in our own package
         imports.removeSamePackage(spackage);
 
-        VelocityContext ctx = new VelocityContext();
-        ctx.put("name", name);
-        ctx.put("package", spackage);
-        ctx.put("methods", sdesc.methods);
-        ctx.put("imports", imports.toList());
-
         // make sure our post service directory exists
         String spath = spackage.replace('.', File.separatorChar);
         spath = spath.replace("/server/", "/client/");
@@ -233,9 +220,11 @@ public class GenRiposteTask extends InvocationTask
 
         // generate the post service file
         String ampath = _asroot + File.separator + spath + File.separator + name + "PostService.as";
-        StringWriter sw = new StringWriter();
-        _velocity.mergeTemplate(POST_SERVICE_TMPL, "UTF-8", ctx, sw);
-        writeFile(ampath, sw.toString());
+        writeFile(ampath, mergeTemplate(POST_SERVICE_TMPL,
+                                        "name", name,
+                                        "package", spackage,
+                                        "methods", sdesc.methods,
+                                        "imports", imports.toList()));
     }
 
     protected void generateMarshaller (File source, ServiceDescription sdesc)
@@ -277,14 +266,6 @@ public class GenRiposteTask extends InvocationTask
         // remove imports in our own package
         imports.removeSamePackage(mpackage);
 
-        VelocityContext ctx = new VelocityContext();
-        ctx.put("name", name);
-        ctx.put("package", mpackage);
-        ctx.put("methods", sdesc.methods);
-        ctx.put("imports", imports.toList());
-        ctx.put("spackage", spackage);
-        ctx.put("serviceId", sdesc.serviceId);
-
         // make sure our post service directory exists
         String spath = mpackage.replace('.', File.separatorChar);
         spath = spath.replace("/server/", "/data/");
@@ -292,9 +273,13 @@ public class GenRiposteTask extends InvocationTask
 
         // generate the post service file
         String ampath = _asroot + File.separator + spath + File.separator + name + "Marshaller.as";
-        StringWriter sw = new StringWriter();
-        _velocity.mergeTemplate(MARSHALLER_TMPL, "UTF-8", ctx, sw);
-        writeFile(ampath, sw.toString());
+        writeFile(ampath, mergeTemplate(MARSHALLER_TMPL,
+                                        "name", name,
+                                        "package", mpackage,
+                                        "methods", sdesc.methods,
+                                        "imports", imports.toList(),
+                                        "spackage", spackage,
+                                        "serviceId", sdesc.serviceId));
     }
 
     /** Rolls up everything needed for the generate* methods. */
