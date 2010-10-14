@@ -7,7 +7,7 @@
     <include name="guice.jar"/>
     <include name="jarjar-1.0.jar"/>
     <include name="narya-base.jar"/>
-    <include name="narya-tools.jar"/>
+    <include name="narya-tools-full.jar"/>
     <include name="samskivert.jar"/>
     <include name="servlet-api.jar"/>
     <include name="aspirin.swc"/>

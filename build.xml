@@ -131,7 +131,7 @@
              classpathref="classpath"/>
     <jarjar destfile="${deploy.dir}/${lib.name}-tools.jar">
       <fileset dir="${classes.dir}"/>
-      <zipfileset src="${deploy.dir}/lib/narya-tools.jar"/>
+      <zipfileset src="${deploy.dir}/lib/narya-tools-full.jar"/>
       <rule pattern="com.google.**" result="cgc.@1"/>
       <rule pattern="com.samskivert.**" result="cs.@1"/>
     </jarjar>
