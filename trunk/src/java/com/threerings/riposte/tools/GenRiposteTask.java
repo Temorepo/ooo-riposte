@@ -21,7 +21,6 @@
 package com.threerings.riposte.tools;
 
 import java.io.File;
-import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -106,7 +105,7 @@ public class GenRiposteTask extends InvocationTask
     }
 
     @Override
-    protected void processService (File source, Class<?> service)
+    public void processClass (File source, Class<?> service)
         throws Exception
     {
         System.out.println("Processing " + service.getName() + "...");
