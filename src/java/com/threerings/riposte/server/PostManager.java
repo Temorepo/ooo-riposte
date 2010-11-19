@@ -59,6 +59,9 @@ public class PostManager
     /** The name used in the @Named annotation for the constructor's injected client version */
     public static final String CLIENT_VERSION = "RiposteClientVersion";
 
+    /** The name used in the @Named annotation for the constructor's injected authLocal field */
+    public static final String AUTH_LOCAL = "RiposeAuthLocal";
+
     /**
      * Constructor for PostManager. PostManager may be Guice injected, or can be constructed by
      * hand. If it is created by Guice, the protected _injector field will be injected by Guice, and
@@ -68,16 +71,21 @@ public class PostManager
      * @param dispatchers A mapping of service id to the {@link PostDispatcher} that's responsible
      *                       for handling that service's RPC calls.
      * @param clientVersion {@link PostRequest} will send along a client-defined version string with
-     *                         every request. If the client and server version strings don't match, a
+     *                      every request. If the client and server version strings don't match, a
      *                      {@link PostException} is called to notify the client that it is out of
      *                      date. If versioning is not required, client and server can both use null
      *                      for the version string.
+     * @param authLocal A ThreadLocal to contain the auth code sent with every request from the
+     *                  client, if it was enabled there. To disable auth code streaming completely,
+     *                  set authCodeAnbled in PostClient to false, and pass in null for authLocal.
      */
     @Inject
     public PostManager (@Named(DISPATCHERS) Map<Integer, PostDispatcher> dispatchers,
-                        @Named(CLIENT_VERSION) String clientVersion)
+                        @Named(CLIENT_VERSION) String clientVersion,
+                        @Named(AUTH_LOCAL) ThreadLocal<String> authLocal)
     {
         _clientVersion = clientVersion;
+        _authLocal = authLocal;
         if (dispatchers == null) {
             _dispatchers = Maps.newHashMap();
         } else {
@@ -124,6 +132,7 @@ public class PostManager
         try {
             ServiceMethodInvoker invoker = getInvoker(ois);
             methodName = invoker.getMethodName();
+            _authLocal.set(invoker.authCode);
             sendResult(invoker.invoke(), oos);
 
         } catch (PostException pe) {
@@ -148,6 +157,7 @@ public class PostManager
     protected ServiceMethodInvoker getInvoker (ObjectInputStream ois)
         throws Exception
     {
+        String authCode = null;
         int serviceId;
         int methodId;
         try {
@@ -159,6 +169,9 @@ public class PostManager
                 throw new PostException(PostCodes.VERSION_MISMATCH);
             }
 
+            if (_authLocal != null) {
+                authCode = ois.readUTF();
+            }
             serviceId = ois.readInt();
             methodId = ois.readInt();
         } catch (IOException ioe) {
@@ -197,7 +210,7 @@ public class PostManager
             }
         }
 
-        return new ServiceMethodInvoker(dispatcher, methodId, args);
+        return new ServiceMethodInvoker(dispatcher, methodId, args, authCode);
     }
 
     protected void sendResult (Object result, ObjectOutputStream oos)
@@ -226,12 +239,15 @@ public class PostManager
         public final PostDispatcher dispatcher;
         public final int methodId;
         public final Object[] args;
+        public final String authCode;
 
-        public ServiceMethodInvoker (PostDispatcher dispatcher, int methodId, Object[] args)
+        public ServiceMethodInvoker (PostDispatcher dispatcher, int methodId, Object[] args,
+                                     String authCode)
         {
             this.dispatcher = dispatcher;
             this.methodId = methodId;
             this.args = args;
+            this.authCode = authCode;
         }
 
         public Object invoke ()
@@ -248,6 +264,7 @@ public class PostManager
 
     protected Map<Integer, PostDispatcher> _dispatchers;
     protected String _clientVersion;
+    protected ThreadLocal<String> _authLocal;
 
     @Inject
     protected Injector _injector;

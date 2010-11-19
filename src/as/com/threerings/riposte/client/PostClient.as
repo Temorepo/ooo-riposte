@@ -54,10 +54,11 @@ public class PostClient
      *                with a null version.
      */
     public function PostClient (serviceAddress :String, version :String = null,
-        defaultListener :PostListener = null)
+                                useAuthCode :Boolean = false, defaultListener :PostListener = null)
     {
         _serviceAddress = serviceAddress;
         _version = version;
+        _useAuthCode = useAuthCode;
         _defaultListener = defaultListener;
     }
 
@@ -96,6 +97,23 @@ public class PostClient
 
         marshaller.init(this);
         _services.put(clazz, marshaller);
+    }
+
+    /**
+     * Set the auth code to send with each request, if this PostClient was configured to use it
+     * in the constrcutor.
+     *
+     * @param authCode The auth code to send
+     */
+    public function setAuthCode (authCode :String) :void
+    {
+        if (!_useAuthCode) {
+            log.warning("This PostClient was not configured to use auth codes, this auth code" +
+                " will be ignored");
+            return;
+        }
+
+        _authCode = authCode;
     }
 
     /**
@@ -148,6 +166,9 @@ public class PostClient
         var bytes :ByteArray = new ByteArray();
         var oos :ObjectOutputStream = new ObjectOutputStream(bytes);
         oos.writeUTF(_version);
+        if (_useAuthCode) {
+            oos.writeUTF(_authCode);
+        }
         oos.writeInt(serviceId);
         oos.writeInt(methodId);
         oos.writeObject(args);
@@ -251,6 +272,8 @@ public class PostClient
     // is fine.
     protected var _services :Map = Maps.newMapOf(Class);
     protected var _version :String;
+    protected var _useAuthCode :Boolean;
+    protected var _authCode :String;
     protected var _queue :Array = [];
     protected var _postIsPending :Boolean;
     protected var _defaultListener :PostListener;
