@@ -34,9 +34,9 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 import com.samskivert.util.ComparableArrayList;
-import com.samskivert.util.GenUtil;
 import com.samskivert.util.StringUtil;
 
+import com.threerings.presents.tools.GenUtil;
 import com.threerings.presents.tools.ImportSet;
 import com.threerings.presents.tools.InvocationTask;
 
@@ -79,7 +79,7 @@ public class GenRiposteTask extends InvocationTask
             Type[] types = method.getGenericParameterTypes();
             for (int idx : _parameterized) {
                 casts.add(GenUtil.simpleName(types[idx]) + " arg" + idx + " = " +
-                    super.unboxArgument(types[idx], idx, true) + ";");
+                    unboxArgument(types[idx], idx, false) + ";");
             }
             return casts;
         }
@@ -89,7 +89,12 @@ public class GenRiposteTask extends InvocationTask
             if (listenerMode && type instanceof ParameterizedType) {
                 return "arg" + index;
             } else {
-                return super.unboxArgument(type, index, listenerMode);
+                String unboxed = GenUtil.unboxArgument(type, "args[" + index + "]");
+                // hack to get around a breaking change in GenUtil
+                if (unboxed.startsWith("this")) {
+                    unboxed = "(" + GenUtil.simpleName(type) + ")args[" + index + "]";
+                }
+                return unboxed;
             }
         }
 
