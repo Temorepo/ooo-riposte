@@ -1,38 +1,38 @@
-package $package {
+package {{package}} {
 
 import com.threerings.riposte.client.PostListener;
 import com.threerings.riposte.data.PostMarshaller;
-import $spackage.${name}PostService;
-#foreach ($import in $imports)
-import $import;
-#end
+import {{spackage}}.{{name}}PostService;
+{{#imports}}
+import {{this}};
+{{/imports}}
 
 /**
- * Provides the implementation of the <code>${name}Service</code> interface that marshalls the
+ * Provides the implementation of the <code>{{name}}Service</code> interface that marshalls the
  * arguments and delivers the request to the service implementor on the server.
  */
-public class ${name}Marshaller extends PostMarshaller
-    implements ${name}PostService
+public class {{name}}Marshaller extends PostMarshaller
+    implements {{name}}PostService
 {
-    public static const SERVICE_ID :int = ${serviceId};
+    public static const SERVICE_ID :int = {{serviceId}};
 
-#foreach ($m in $methods)
-#if ($velocityCount > 1)
+{{#methods}}
+{{^-first}}
 
-#end
-    /** The method id used to dispatch <code>$m.method.name</code> requests. */
-    public static const $m.code :int = $velocityCount;
+{{/-first}}
+    /** The method id used to dispatch <code>{{method.name}}</code> requests. */
+    public static const {{code}} :int = {{-index}};
 
-    // from interface ${name}PostService
-    public function $m.method.name (#if ($m.hasArgs(false))$m.getASArgList(false), #{end}listener :PostListener = null) :void
+    // from interface {{name}}PostService
+    public function {{method.name}} ({{#hasArgs}}{{getASArgList}}, {{/hasArgs}}listener :PostListener = null) :void
     {
-        var args :Array = [ $m.getASWrappedArgList(false) ];
+        var args :Array = [ {{getASWrappedArgList}} ];
         if (listener != null) {
             args.push(listener);
         }
-        sendRequest($m.code, args);
+        sendRequest({{code}}, args);
     }
-#end
+{{/methods}}
 
     override public function getServiceId () :int
     {
