@@ -271,9 +271,9 @@ public class PostClient
     // PostService doesn't extend Hashable, but these are all singletons, so a DictionaryMap
     // is fine.
     protected var _services :Map = Maps.newMapOf(Class);
-    protected var _version :String;
+    protected var _version :String = "";
     protected var _useAuthCode :Boolean;
-    protected var _authCode :String;
+    protected var _authCode :String = "";
     protected var _queue :Array = [];
     protected var _postIsPending :Boolean;
     protected var _defaultListener :PostListener;
