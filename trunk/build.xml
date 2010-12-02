@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project name="riposte" basedir="." default="compile" xmlns:artifact="urn:maven-artifact-ant">
-  <property name="jsrc.dir" value="src/java"/>
-  <property name="asrc.dir" value="src/as"/>
+  <property name="jsrc.dir" value="src/main/java"/>
+  <property name="asrc.dir" value="src/main/as"/>
   <property name="deploy.dir" value="dist"/>
   <property name="classes.dir" value="${deploy.dir}/classes"/>
 
