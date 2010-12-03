@@ -31,7 +31,6 @@ import java.util.List;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 
 import com.samskivert.util.ComparableArrayList;
 import com.samskivert.util.StringUtil;
@@ -152,7 +151,7 @@ public class GenRiposteTask extends InvocationTask
         ImportSet imports = sdesc.imports.clone();
 
         // add some classes required for all dispatchers
-        imports.add(Inject.class);
+        imports.add("com.google.inject.Inject");
         imports.add(PostCodes.class);
         imports.add(PostDispatcher.class);
         imports.add(PostException.class);
