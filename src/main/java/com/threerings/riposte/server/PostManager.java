@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.Map;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -82,7 +83,7 @@ public class PostManager
     @Inject
     public PostManager (@Named(DISPATCHERS) Map<Integer, PostDispatcher> dispatchers,
                         @Named(CLIENT_VERSION) String clientVersion,
-                        @Named(AUTH_LOCAL) ThreadLocal<String> authLocal)
+                        @Nullable @Named(AUTH_LOCAL) ThreadLocal<String> authLocal)
     {
         _clientVersion = clientVersion;
         _authLocal = authLocal;
