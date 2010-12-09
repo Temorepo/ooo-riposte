@@ -33,8 +33,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import com.samskivert.util.ComparableArrayList;
-import com.samskivert.util.StringUtil;
-
 import com.threerings.presents.tools.GenUtil;
 import com.threerings.presents.tools.ImportSet;
 import com.threerings.presents.tools.InvocationTask;
@@ -141,10 +139,6 @@ public class GenRiposteTask extends InvocationTask
     protected void generateDispatcher (File source, ServiceDescription sdesc)
         throws Exception
     {
-        if (_verbose) {
-            System.out.println("Generating dispatcher");
-        }
-
         String name = sdesc.sname.replace("Service", "");
 
         // start with the imports required by service methods
@@ -185,10 +179,6 @@ public class GenRiposteTask extends InvocationTask
     protected void generatePostService (File source, ServiceDescription sdesc)
         throws Exception
     {
-        if (_verbose) {
-            System.out.println("Generating PostService");
-        }
-
         String sname = sdesc.sname;
         String name = sname.replace("Service", "");
         String spackage = sdesc.spackage.replace(".server", ".client");
@@ -233,10 +223,6 @@ public class GenRiposteTask extends InvocationTask
     protected void generateMarshaller (File source, ServiceDescription sdesc)
         throws Exception
     {
-        if (_verbose) {
-            System.out.println("Generating Marshaller");
-        }
-
         String sname = sdesc.sname;
         String name = sname.replace("Service", "");
         String mpackage = sdesc.spackage.replace(".server", ".data");
@@ -311,15 +297,7 @@ public class GenRiposteTask extends InvocationTask
                 if (!Modifier.isPublic(m.getModifiers())) {
                     continue;
                 }
-                if (_verbose) {
-                    System.out.println("Adding " + m + ", imports are " +
-                        StringUtil.toString(imports));
-                }
                 methods.add(new PostServiceMethod(m, imports));
-                if (_verbose) {
-                    System.out.println("Added " + m + ", imports are " +
-                        StringUtil.toString(imports));
-                }
             }
             methods.sort();
         }
