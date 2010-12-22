@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,6 +35,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.google.inject.internal.Nullable;
 import com.google.inject.name.Named;
 
 import com.samskivert.util.StringUtil;
