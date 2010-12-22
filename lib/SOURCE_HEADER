@@ -18,25 +18,3 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-package com.threerings.riposte.server;
-
-public class Validators
-{
-    public static void checkNotNull (Object value, String message, Object... args)
-        throws RiposteValidationException
-    {
-        check(value != null, message, args);
-    }
-
-    /**
-     * Throws a RiposteValidationException with the given message unless condition is true.
-     */
-    public static void check (boolean condition, String message, Object... args)
-        throws RiposteValidationException
-    {
-        if (!condition) {
-            throw new RiposteValidationException(message, args);
-        }
-    }
-
-}
