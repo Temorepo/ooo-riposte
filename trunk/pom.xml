@@ -38,9 +38,7 @@
 
   <scm>
     <connection>scm:svn:http://ooo-riposte.googlecode.com/svn/trunk/</connection>
-    <developerConnection>
-      scm:svn:https://ooo-riposte.googlecode.com/svn/trunk/
-    </developerConnection>
+    <developerConnection>scm:svn:https://ooo-riposte.googlecode.com/svn/trunk/</developerConnection>
     <url>http://ooo-riposte.googlecode.com/svn/trunk/</url>
   </scm>
 
