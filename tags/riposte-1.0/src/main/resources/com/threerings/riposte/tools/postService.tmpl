@@ -1,0 +1,22 @@
+package {{package}} {
+
+import com.threerings.riposte.client.PostService;
+import com.threerings.riposte.client.PostListener;
+{{#imports}}
+import {{this}};
+{{/imports}}
+
+/**
+ * The Actionscript client side of the Java {{name}}Service interface.
+ */
+public interface {{name}}PostService extends PostService
+{
+{{#methods}}
+{{^-first}}
+
+{{/-first}}
+    // from Java interface {{name}}Service
+    function {{method.name}} ({{#hasArgs}}{{getASArgList}}, {{/hasArgs}}listener :PostListener = null) :void;
+{{/methods}}
+}
+}
