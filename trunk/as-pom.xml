@@ -4,7 +4,7 @@
   <groupId>com.threerings</groupId>
   <artifactId>ripostelib</artifactId>
   <packaging>swc</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <name>riposte</name>
   <description>
     A client/server library for performing RPC calls with binary object streaming over HTTP POST.
