@@ -4,7 +4,7 @@
   <groupId>com.threerings</groupId>
   <artifactId>riposte-tools</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <name>riposte-tools</name>
   <description>Riposte with dependencies configured for its tools.</description>
 
