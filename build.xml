@@ -6,12 +6,12 @@
   <property name="classes.dir" value="${deploy.dir}/classes"/>
 
   <property name="ooo-build.vers" value="2.1"/>
-  <ant antfile="bootstrap.xml"/>
+  <ant antfile="etc/bootstrap.xml"/>
   <import file="${user.home}/.m2/ooo-build/${ooo-build.vers}/ooo-build.xml"/>
 
   <target name="-prepare" depends="-init-ooo">
     <mavendep pom="pom.xml" path="compile.classpath"/>
-    <mavendep pom="as-pom.xml" pathProp="aslib.path"/>
+    <mavendep pom="etc/as-pom.xml" pathProp="aslib.path"/>
     <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.0"/>
     <mkdir dir="${deploy.dir}"/>
     <path id="built.classpath">
@@ -74,7 +74,7 @@
   <target name="maven-deploy" depends="dist" 
           description="Deploys our build artifacts to a Maven repository.">
     <mavendeploy file="${deploy.dir}/${ant.project.name}.jar" srcdir="${jsrc.dir}" pom="pom.xml"/>
-    <mavendeploy file="${deploy.dir}/${ant.project.name}.jar" pom="tools-pom.xml"/>
-    <mavendeploy file="${deploy.dir}/${ant.project.name}lib.swc" pom="as-pom.xml"/>
+    <mavendeploy file="${deploy.dir}/${ant.project.name}.jar" pom="etc/tools-pom.xml"/>
+    <mavendeploy file="${deploy.dir}/${ant.project.name}lib.swc" pom="etc/as-pom.xml"/>
   </target>
 </project>
