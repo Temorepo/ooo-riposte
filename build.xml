@@ -5,29 +5,14 @@
   <property name="deploy.dir" value="dist"/>
   <property name="classes.dir" value="${deploy.dir}/classes"/>
 
-  <!-- we read our flexsdk.dir from build.properties when building standalone -->
-  <property file="etc/build.properties"/>
+  <property name="ooo-build.vers" value="2.1"/>
+  <ant antfile="bootstrap.xml"/>
+  <import file="${user.home}/.m2/ooo-build/${ooo-build.vers}/ooo-build.xml"/>
 
-  <property name="maven-ant.vers" value="2.1.1"/>
-  <property name="maven-ant.dir" value="${user.home}/.m2/ant-support"/>
-  <property name="maven-ant.jar" value="${maven-ant.dir}/maven-ant-tasks-${maven-ant.vers}.jar"/>
-  <property name="maven-ant.url"
-            value="http://mirrors.ibiblio.org/pub/mirrors/apache/maven/binaries"/>
-  <condition property="maven-ant.exists"><available file="${maven-ant.jar}"/></condition>
-  <target name="-download-maven-ant" unless="maven-ant.exists">
-    <mkdir dir="${maven-ant.dir}"/>
-    <get src="${maven-ant.url}/maven-ant-tasks-${maven-ant.vers}.jar"
-         dest="${maven-ant.jar}" usetimestamp="true"/>
-  </target>
-
-  <target name="-init-maven-ant" depends="-download-maven-ant">
-    <taskdef resource="org/apache/maven/artifact/ant/antlib.xml"
-             uri="urn:maven-artifact-ant" classpath="${maven-ant.jar}"/>
-    <artifact:pom id="pom" file="pom.xml"/>
-    <artifact:dependencies pathId="compile.classpath" pomRefId="pom" useScope="compile"/>
-  </target>
-
-  <target name="-prepare" depends="-init-maven-ant">
+  <target name="-prepare" depends="-init-ooo">
+    <mavendep pom="pom.xml" path="compile.classpath"/>
+    <mavendep pom="as-pom.xml" pathProp="aslib.path"/>
+    <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.0"/>
     <mkdir dir="${deploy.dir}"/>
     <path id="built.classpath">
       <path refid="compile.classpath"/>
@@ -47,60 +32,14 @@
   </target>
 
   <target name="compile" depends="-prepare" description="Builds the Java code.">
-    <mkdir dir="${classes.dir}"/>
     <copy todir="${classes.dir}"><fileset dir="src/main/resources" includes="**"/></copy>
-    <javac srcdir="${jsrc.dir}" destdir="${classes.dir}" includeAntRuntime="false"
-           debug="on" optimize="${build.optimize}" deprecation="on" source="1.5" target="1.5">
-      <classpath refid="compile.classpath"/>
-      <compilerarg value="-Xlint"/>
-      <compilerarg value="-Xlint:-serial"/>
-    </javac>
+    <ooojavac version="1.5" srcdir="${jsrc.dir}" destdir="${classes.dir}"
+              classpathref="compile.classpath"/>
   </target>
 
-  <target name="-checkaslib">
-    <condition property="no_build_aslib">
-      <not><available file="${flexsdk.dir}/lib/compc.jar"/></not>
-    </condition>
-    <condition property="no_rebuild_aslib"><or>
-      <isset property="no_build_aslib"/>
-      <uptodate targetfile="${deploy.dir}/${ant.project.name}lib.swc">
-        <srcfiles dir="${asrc.dir}" includes="**/*.as"/>
-      </uptodate>
-    </or></condition>
-  </target>
-  <target name="-noteaslib" if="no_build_aslib"><echo>
-    NOTE: not building ActionScript library. Pass -Dflexsdk.dir=DIR to
-    activate ActionScript library build.
-  </echo></target>
-
-  <target name="-asprepare" depends="-prepare,-checkaslib">
-    <!-- obtain our ActionScript dependencies via Maven -->
-    <artifact:pom id="as-pom" file="as-pom.xml"/>
-    <artifact:dependencies filesetId="aslibs.fileset" pomRefId="as-pom" useScope="compile"/>
-    <copy todir="${deploy.dir}/lib">
-      <fileset refid="aslibs.fileset"/>
-      <mapper type="flatten"/>
-    </copy>
-  </target>
-
-  <target name="aslib" unless="no_rebuild_aslib" depends="-asprepare,-noteaslib"
-          description="Builds the ActionScript code">
-    <copy file="etc/aslib-config.xml.in" tofile="${deploy.dir}/aslib-config.xml">
-      <filterset>
-        <filter token="flex_sdk_dir" value="${flexsdk.dir}"/>
-        <filter token="lib_name" value="${ant.project.name}"/>
-      </filterset>
-    </copy>
-    <java jar="${flexsdk.dir}/lib/compc.jar" fork="true" failonerror="true">
-      <arg value="-load-config"/>
-      <arg value="${deploy.dir}/aslib-config.xml"/>
-      <arg value="-compiler.optimize"/>
-      <arg value="-compiler.source-path=${asrc.dir}/"/>
-      <arg value="-include-sources=${asrc.dir}/"/>
-      <arg value="-output"/>
-      <arg value="${deploy.dir}/${ant.project.name}lib.swc"/>
-    </java>
-    <delete file="${deploy.dir}/aslib-config.xml"/>
+  <target name="aslib" depends="-prepare" description="Builds the ActionScript library (.swc file)">
+    <compc srcdir="${asrc.dir}" libpath="${aslib.path}"
+           dest="${deploy.dir}/${ant.project.name}lib.swc"/>
   </target>
 
   <target name="javadoc" depends="-prepare" description="Builds javadoc documentation">
@@ -121,21 +60,10 @@
     </javadoc>
   </target>
 
-  <target name="asdoc" unless="no_build_aslib" depends="-asprepare"
+  <target name="asdoc" unless="no_build_aslib" depends="-prepare"
           description="Builds the ActionScript documention">
-    <property name="asdoc.dir" value="docs/actionscript"/>
-    <java classpath="${flexsdk.dir}/lib/asdoc.jar" classname="flex2.tools.ASDoc" fork="true">
-      <jvmarg value="-Xmx1024m"/>
-      <jvmarg value="-Dsun.io.useCanonCashes=false"/>
-      <jvmarg value="-Xbootclasspath/p:${flexsdk.dir}/asdoc/lib/xalan.jar"/>
-      <arg value="+flexlib=${flexsdk.dir}/frameworks"/>
-      <arg line="-library-path=${flexsdk.dir}/frameworks/libs"/>
-      <arg line="-library-path+=${deploy.dir}/lib/aspirin.swc"/>
-      <arg line="-library-path+=${deploy.dir}/lib/naryalib.swc"/>
-      <arg line="-templates-path ${flexsdk.dir}/asdoc/templates"/>
-      <arg line="-doc-sources ${asrc.dir}"/>
-      <arg line="-output ${asdoc.dir}"/>
-    </java>
+    <mkdir dir="${deploy.dir}/asdocs"/>
+    <asdoc srcdir="${asrc.dir}" libpath="${acompile.path}" destdir="${deploy.dir}/asdocs"/>
   </target>
 
   <target name="dist" depends="compile,aslib" description="Compiles code, builds jar files.">
@@ -145,21 +73,8 @@
   <property name="maven.deploy.repo" value="file://${user.home}/.m2/repository"/>
   <target name="maven-deploy" depends="dist" 
           description="Deploys our build artifacts to a Maven repository.">
-    <jar basedir="${jsrc.dir}" destfile="${deploy.dir}/${ant.project.name}-sources.jar"/>
-    <artifact:deploy file="${deploy.dir}/${ant.project.name}.jar" uniqueVersion="false">
-      <remoteRepository url="${maven.deploy.repo}"/>
-      <pom refid="pom"/>
-      <attach file="${deploy.dir}/${ant.project.name}-sources.jar" classifier="sources"/>
-    </artifact:deploy>
-    <artifact:pom id="tools-pom" file="tools-pom.xml"/>
-    <artifact:deploy file="${deploy.dir}/${ant.project.name}.jar" uniqueVersion="false">
-      <remoteRepository url="${maven.deploy.repo}"/>
-      <pom refid="tools-pom"/>
-    </artifact:deploy>
-    <artifact:pom id="as-pom" file="as-pom.xml"/>
-    <artifact:deploy file="${deploy.dir}/${ant.project.name}lib.swc" uniqueVersion="false">
-      <remoteRepository url="${maven.deploy.repo}"/>
-      <pom refid="as-pom"/>
-    </artifact:deploy>
+    <mavendeploy file="${deploy.dir}/${ant.project.name}.jar" srcdir="${jsrc.dir}" pom="pom.xml"/>
+    <mavendeploy file="${deploy.dir}/${ant.project.name}.jar" pom="tools-pom.xml"/>
+    <mavendeploy file="${deploy.dir}/${ant.project.name}lib.swc" pom="as-pom.xml"/>
   </target>
 </project>
