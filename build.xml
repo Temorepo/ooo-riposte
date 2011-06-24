@@ -5,7 +5,7 @@
   <property name="deploy.dir" value="dist"/>
   <property name="classes.dir" value="${deploy.dir}/classes"/>
 
-  <property name="ooo-build.vers" value="2.1"/>
+  <property name="ooo-build.vers" value="2.5"/>
   <ant antfile="etc/bootstrap.xml"/>
   <import file="${user.home}/.m2/ooo-build/${ooo-build.vers}/ooo-build.xml"/>
 
@@ -71,7 +71,7 @@
   </target>
 
   <property name="maven.deploy.repo" value="file://${user.home}/.m2/repository"/>
-  <target name="maven-deploy" depends="dist" 
+  <target name="maven-deploy" depends="dist"
           description="Deploys our build artifacts to a Maven repository.">
     <mavendeploy file="${deploy.dir}/${ant.project.name}.jar" srcdir="${jsrc.dir}" pom="pom.xml"/>
     <mavendeploy file="${deploy.dir}/${ant.project.name}.jar" pom="etc/tools-pom.xml"/>
