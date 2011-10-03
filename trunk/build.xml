@@ -70,7 +70,6 @@
     <jar destfile="${deploy.dir}/${ant.project.name}.jar" basedir="${classes.dir}"/>
   </target>
 
-  <property name="maven.deploy.repo" value="file://${user.home}/.m2/repository"/>
   <target name="maven-deploy" depends="dist"
           description="Deploys our build artifacts to a Maven repository.">
     <mavendeploy file="${deploy.dir}/${ant.project.name}.jar" srcdir="${jsrc.dir}" pom="pom.xml"/>
