@@ -48,9 +48,9 @@ public class GenRiposteTask extends InvocationTask
 {
     public class PostServiceMethod extends ServiceMethod
     {
-        public PostServiceMethod (Method method, ImportSet imports)
+        public PostServiceMethod (Method method)
         {
-            super(method, imports);
+            super(method);
 
             Type[] types = method.getGenericParameterTypes();
             for (int ii = 0; ii < types.length; ii++) {
@@ -297,7 +297,9 @@ public class GenRiposteTask extends InvocationTask
                 if (!Modifier.isPublic(m.getModifiers())) {
                     continue;
                 }
-                methods.add(new PostServiceMethod(m, imports));
+                PostServiceMethod psm = new PostServiceMethod(m);
+                psm.gatherImports(imports);
+                methods.add(psm);
             }
             methods.sort();
         }
