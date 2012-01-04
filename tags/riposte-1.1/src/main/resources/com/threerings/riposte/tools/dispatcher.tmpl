@@ -1,0 +1,74 @@
+package {{package}};
+
+import com.threerings.util.MethodProfiler;
+
+{{#imports}}
+import {{this}};
+{{/imports}}
+
+/**
+ * Provides the implementation of {@link PostDispatcher} for the the
+ * {@link {{name}}Service}.  When a request comes to the server for this service, this
+ * class is responsible for calling the correct service methods with the correct arguments and
+ * for getting the result back to the user
+ */
+public class {{name}}Dispatcher
+    implements PostDispatcher
+{
+    @Inject
+    public {{name}}Dispatcher ({{name}}Service service, MethodProfiler profiler)
+    {
+        _service = service;
+        _profiler = profiler;
+    }
+
+    @Override // documentation inherited
+    public Object dispatchRequest (int methodId, Object[] args)
+        throws Exception
+    {
+        switch (methodId) {
+{{#methods}}
+        case {{code}}:
+            if (_profiler != null) {
+                _profiler.enter("{{name}}Service.{{method.name}}");
+            }
+            try {
+{{#containsGenericParameters}}{{#getGenericCasts}}
+                @SuppressWarnings("unchecked") {{this}}
+{{/getGenericCasts}}{{/containsGenericParameters}}
+                {{^returnsVoid}}return {{/returnsVoid}}_service.{{method.name}}(
+                    {{getUnwrappedArgListAsListeners}}
+                );
+{{#returnsVoid}}
+                return null;
+{{/returnsVoid}}
+            } finally {
+                if (_profiler != null) {
+                    _profiler.exit("{{name}}Service.{{method.name}}");
+                }
+            }
+
+{{/methods}}
+        default:
+            throw new PostException(PostCodes.METHOD_NOT_FOUND, "" + methodId);
+        }
+    }
+
+    @Override // documentation inherited
+    public String getMethodName (int methodId)
+    {
+        switch (methodId) {
+{{#methods}}
+        case {{code}}: return "{{name}}Dispatcher::{{method.name}}";
+{{/methods}}
+        default: return "{{name}}Dispatcher [Unknown method id " + methodId + "]";
+        }
+    }
+
+{{#methods}}
+    protected static final int {{code}} = {{-index}};
+{{/methods}}
+
+    protected {{name}}Service _service;
+    protected MethodProfiler _profiler;
+}

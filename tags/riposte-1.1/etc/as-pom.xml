@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.threerings</groupId>
+  <artifactId>ripostelib</artifactId>
+  <packaging>swc</packaging>
+  <version>1.1</version>
+  <name>riposte</name>
+  <description>
+    A client/server library for performing RPC calls with binary object streaming over HTTP POST.
+  </description>
+  <url>http://code.google.com/p/ooo-riposte/</url>
+  <issueManagement>
+    <url>http://code.google.com/p/ooo-riposte/issues/list</url>
+  </issueManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.threerings</groupId>
+      <artifactId>aspirin</artifactId>
+      <version>1.6</version>
+      <type>swc</type>
+    </dependency>
+    <dependency>
+      <groupId>com.threerings</groupId>
+      <artifactId>naryalib</artifactId>
+      <version>1.9</version>
+      <type>swc</type>
+    </dependency>
+  </dependencies>
+</project>
