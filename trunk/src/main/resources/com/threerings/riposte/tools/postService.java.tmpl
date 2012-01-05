@@ -1,0 +1,24 @@
+package {{package}};
+
+import com.threerings.riposte.client.PostService;
+import com.threerings.riposte.client.PostResultListener;
+{{#imports}}
+import {{this}};
+{{/imports}}
+
+/**
+ * The client side of the {{name}}Service interface.
+ */
+public interface {{name}}PostService extends PostService
+{
+{{#methods}}
+{{^-first}}
+
+{{/-first}}
+    // from interface {{name}}Service
+    public void {{method.name}} ({{#hasArgs}}{{getArgList}}{{/hasArgs}});
+
+    // from interface {{name}}Service
+    public void {{method.name}} ({{#hasArgs}}{{getArgList}}, {{/hasArgs}}{{getPostListener}});
+{{/methods}}
+}
