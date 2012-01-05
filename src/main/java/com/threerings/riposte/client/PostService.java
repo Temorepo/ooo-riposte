@@ -1,6 +1,4 @@
 //
-// $Id$
-//
 // Riposte library - an RPC library for binary data over HTTP POST
 // Copyright (C) 2009-2011 Nathan Curtis
 //
@@ -21,13 +19,10 @@
 package com.threerings.riposte.client;
 
 /**
- * Adds an additional requestProcessed function.  Use this for service calls that don't
- * return a value.
+ * A marker interface that client-side service interfaces should extend.  Client-side services and
+ * marshallers will typically be generated via the genriposte ant task.
  */
-public interface PostConfirmListener extends PostListener
+public interface PostService
 {
-    /**
-     * Indicates that the request was successfully processed.
-     */
-    void requestProcessed ();
+    public void init (PostClient client);
 }

@@ -23,10 +23,10 @@ package com.threerings.riposte.client;
 /**
  * This listener interface is used for service calls that return a value.
  */
-public interface PostResultListener extends PostListener
+public interface PostResultListener<T> extends PostListener
 {
     /**
      * Indicates that the request was successfully processed.
      */
-    void requestProcessed (Object result);
+    void requestProcessed (T result);
 }

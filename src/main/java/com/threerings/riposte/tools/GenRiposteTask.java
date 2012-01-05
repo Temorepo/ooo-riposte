@@ -65,6 +65,12 @@ public class GenRiposteTask extends InvocationTask
             return method.getReturnType() == Void.TYPE;
         }
 
+        public String getPostListener ()
+        {
+            return returnsVoid() ? "PostResultListener<Void> listener" :
+                "PostResultListener<" + GenUtil.simpleName(method.getGenericReturnType()) + ">";
+        }
+
         public boolean containsGenericParameters ()
         {
             return _parameterized.size() > 0;
@@ -99,11 +105,30 @@ public class GenRiposteTask extends InvocationTask
     }
 
     /**
-     * Configures the path to our ActionScript source files.
+     * Configures the path to our client source files.
      */
-    public void setAsroot (File asroot)
+    public void setClientroot (File clientroot)
     {
-        _asroot = asroot;
+        _clientroot = clientroot;
+    }
+
+    /**
+     * Sets the client language in use. Defaults to Actionscript. Valid values are:
+     *  * "as" or "actionscript"
+     *  * "java"
+     *
+     * Defaults to actionscript
+     */
+    public void setClientlanguage (String language)
+    {
+        if ("actionscript".equals(language)) {
+            language = "as";
+        }
+        if (!"java".equals(language) && !"as".equals(language)) {
+            System.err.println("Invalid client language [" + language + "].");
+            return;
+        }
+        _clientlanguage = language;
     }
 
     @Override
@@ -186,15 +211,17 @@ public class GenRiposteTask extends InvocationTask
         // start with the service method imports
         ImportSet imports = sdesc.imports.clone();
 
-        // replace inner classes with action script equivalents
-        imports.translateInnerClasses();
+        if ("as".equals(_clientlanguage)) {
+            // replace inner classes with action script equivalents
+            imports.translateInnerClasses();
 
-        // allow primitive types in service methods
-        imports.replace("[B", "flash.utils.ByteArray");
-        imports.replace("[I", "com.threerings.io.TypedArray");
+            // allow primitive types in service methods
+            imports.replace("[B", "flash.utils.ByteArray");
+            imports.replace("[I", "com.threerings.io.TypedArray");
 
-        if (imports.removeAll("[L*") > 0) {
-            imports.add("com.threerings.io.TypedArray");
+            if (imports.removeAll("[L*") > 0) {
+                imports.add("com.threerings.io.TypedArray");
+            }
         }
 
         // get rid of java.lang stuff and any remaining primitives
@@ -209,11 +236,12 @@ public class GenRiposteTask extends InvocationTask
         // make sure our post service directory exists
         String spath = spackage.replace('.', File.separatorChar);
         spath = spath.replace("/server/", "/client/");
-        new File(_asroot + File.separator + spath).mkdirs();
+        new File(_clientroot + File.separator + spath).mkdirs();
 
         // generate the post service file
-        String ampath = _asroot + File.separator + spath + File.separator + name + "PostService.as";
-        writeFile(ampath, mergeTemplate(POST_SERVICE_TMPL,
+        String ampath = _clientroot + File.separator + spath + File.separator + name +
+            "PostService." + _clientlanguage;
+        writeFile(ampath, mergeTemplate(getTemplatePath(POST_SERVICE_TMPL),
                                         "name", name,
                                         "package", spackage,
                                         "methods", sdesc.methods,
@@ -231,23 +259,25 @@ public class GenRiposteTask extends InvocationTask
         // start with the service method imports
         ImportSet imports = sdesc.imports.clone();
 
-        // replace inner classes with action script equivalents
-        imports.translateInnerClasses();
+        if ("as".equals(_clientlanguage)) {
+            // replace inner classes with action script equivalents
+            imports.translateInnerClasses();
 
-        // replace primitive types with OOO types (required for unboxing)
-        imports.replace("byte", "com.threerings.util.Byte");
-        imports.replace("int", "com.threerings.util.Integer");
-        imports.replace("boolean", "com.threerings.util.langBoolean");
-        imports.replace("[B", "flash.utils.ByteArray");
-        imports.replace("float", "com.threerings.util.Float");
-        imports.replace("[I", "com.threerings.io.TypedArray");
+            // replace primitive types with OOO types (required for unboxing)
+            imports.replace("byte", "com.threerings.util.Byte");
+            imports.replace("int", "com.threerings.util.Integer");
+            imports.replace("boolean", "com.threerings.util.langBoolean");
+            imports.replace("[B", "flash.utils.ByteArray");
+            imports.replace("float", "com.threerings.util.Float");
+            imports.replace("[I", "com.threerings.io.TypedArray");
+
+            if (imports.removeAll("[L*") > 0) {
+                imports.add("com.threerings.io.TypedArray");
+            }
+        }
 
         // get rid of java.lang stuff and any remaining primitives
         imports.removeGlobals();
-
-        if (imports.removeAll("[L*") > 0) {
-            imports.add("com.threerings.io.TypedArray");
-        }
 
         // get rid of remaining arrays
         imports.removeArrays();
@@ -258,17 +288,23 @@ public class GenRiposteTask extends InvocationTask
         // make sure our post service directory exists
         String spath = mpackage.replace('.', File.separatorChar);
         spath = spath.replace("/server/", "/data/");
-        new File(_asroot + File.separator + spath).mkdirs();
+        new File(_clientroot + File.separator + spath).mkdirs();
 
         // generate the post service file
-        String ampath = _asroot + File.separator + spath + File.separator + name + "Marshaller.as";
-        writeFile(ampath, mergeTemplate(MARSHALLER_TMPL,
+        String ampath = _clientroot + File.separator + spath + File.separator + name +
+            "Marshaller." + _clientlanguage;
+        writeFile(ampath, mergeTemplate(getTemplatePath(MARSHALLER_TMPL),
                                         "name", name,
                                         "package", mpackage,
                                         "methods", sdesc.methods,
                                         "imports", imports.toList(),
                                         "spackage", spackage,
                                         "serviceId", sdesc.serviceId));
+    }
+
+    protected String getTemplatePath (String template)
+    {
+        return template + _clientlanguage + TEMPLATE_EXTENSION;
     }
 
     /** Rolls up everything needed for the generate* methods. */
@@ -327,11 +363,13 @@ public class GenRiposteTask extends InvocationTask
 
     protected static final String SERVICE_ID_FIELD_NAME = "SERVICE_ID";
     protected static final String DISPATCHER_TMPL =
-        "com/threerings/riposte/tools/dispatcher.tmpl";
+        "com/threerings/riposte/tools/dispatcher.java.tmpl";
     protected static final String POST_SERVICE_TMPL =
-        "com/threerings/riposte/tools/postService.tmpl";
+        "com/threerings/riposte/tools/postService.";
     protected static final String MARSHALLER_TMPL =
-        "com/threerings/riposte/tools/marshaller.tmpl";
+        "com/threerings/riposte/tools/marshaller.";
+    protected static final String TEMPLATE_EXTENSION = ".tmpl";
 
-    protected File _asroot;
+    protected File _clientroot;
+    protected String _clientlanguage = "as";
 }
