@@ -162,7 +162,7 @@ public class PostClient
         try {
             oos.writeUTF(_version);
             if (_useAuthCode) {
-                oos.writeUTF(_authCode);
+                oos.writeUTF(getAuthCode(serviceId, methodId, args));
             }
             oos.writeInt(serviceId);
             oos.writeInt(methodId);
@@ -213,6 +213,11 @@ public class PostClient
             }
         });
         maybeSendNextRequest();
+    }
+
+    protected String getAuthCode (int serviceId, int methodId, Object[] args)
+    {
+        return _authCode;
     }
 
     protected void maybeSendNextRequest ()
