@@ -71,18 +71,18 @@ public class PostManager
      *
      * @param dispatchers A mapping of service id to the {@link PostDispatcher} that's responsible
      *                       for handling that service's RPC calls.
-     * @param clientVersion {@link PostRequest} will send along a client-defined version string with
+     * @param clientVersion The client will send along a client-defined version string with
      *                      every request. If the client and server version strings don't match, a
      *                      {@link PostException} is called to notify the client that it is out of
      *                      date. If versioning is not required, client and server can both use null
      *                      for the version string.
      * @param authLocal A ThreadLocal to contain the auth code sent with every request from the
      *                  client, if it was enabled there. To disable auth code streaming completely,
-     *                  set authCodeAnbled in PostClient to false, and pass in null for authLocal.
+     *                  set authCodeEnabled in PostClient to false, and pass in null for authLocal.
      */
     @Inject
     public PostManager (@Named(DISPATCHERS) Map<Integer, PostDispatcher> dispatchers,
-                        @Named(CLIENT_VERSION) String clientVersion,
+                        @Nullable @Named(CLIENT_VERSION) String clientVersion,
                         @Nullable @Named(AUTH_LOCAL) ThreadLocal<String> authLocal)
     {
         _clientVersion = clientVersion;
@@ -98,7 +98,7 @@ public class PostManager
      * Called by the servlet that is receiving Riposte RPC calls with the raw
      * {@link HttpServletRequest} and {@link HttpServletResponse}.  The service call data is read
      * from the {@link HttpServletRequest}, which is assumed to be binary data encapsulated in a
-     * {@link PostRequest} at the top level.  The method response is written to the
+     * in the client request at the top level.  The method response is written to the
      * {@link HttpServletResponse}, or a {@link StreamableError} is sent if an exception occurred.
      * If * the exception is a {@link PostException}, it is not logged on the server.  All other
      * Exceptions are both sent to the client and logged as warnings with the Riposte logger,
