@@ -105,7 +105,15 @@ public class PostClient
             PostService marshaller = entry.getValue();
             if (service.isInstance(marshaller)) {
                 marshaller.init(this);
+                PostService existing = _services.get(service);
+                if (existing != null) {
+                    throw new IllegalArgumentException("This service has already been registered " +
+                        "[service=" + service + ", old=" + existing + ", new=" + marshaller + "]");
+                }
                 _services.put(service, marshaller);
+            } else {
+                throw new IllegalArgumentException("Marshaller does not implement service! " +
+                    "[service=" + service + ", marshaller=" + marshaller + "]");
             }
         }
     }
@@ -130,10 +138,9 @@ public class PostClient
     /**
      * Get the implementor of the given service.
      */
-    @SuppressWarnings("unchecked")
     public <T extends PostService> T getService (Class<T> clazz)
     {
-        return (T) _services.get(clazz);
+        return clazz.cast(_services.get(clazz));
     }
 
     /**
