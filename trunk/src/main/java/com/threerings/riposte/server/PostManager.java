@@ -74,8 +74,8 @@ public class PostManager
      * @param clientVersion The client will send along a client-defined version string with
      *                      every request. If the client and server version strings don't match, a
      *                      {@link PostException} is called to notify the client that it is out of
-     *                      date. If versioning is not required, client and server can both use null
-     *                      for the version string.
+     *                      date. If versioning is not required, client and server can both use the
+     *                      empty string for the version string.
      * @param authLocal A ThreadLocal to contain the auth code sent with every request from the
      *                  client, if it was enabled there. To disable auth code streaming completely,
      *                  set authCodeEnabled in PostClient to false, and pass in null for authLocal.
@@ -85,7 +85,7 @@ public class PostManager
                         @Nullable @Named(CLIENT_VERSION) String clientVersion,
                         @Nullable @Named(AUTH_LOCAL) ThreadLocal<String> authLocal)
     {
-        _clientVersion = clientVersion;
+        _clientVersion = clientVersion == null ? "" : clientVersion;
         _authLocal = authLocal;
         if (dispatchers == null) {
             _dispatchers = Maps.newHashMap();
@@ -175,7 +175,6 @@ public class PostManager
         int serviceId;
         int methodId;
         try {
-            // require that they either both be null or that they .equals()
             String version = ois.readUTF();
             if (!Objects.equal(_clientVersion, version)) {
                 log.warning("Version mismatch from client", "required", _clientVersion,
