@@ -94,6 +94,24 @@ public class PostClient
     }
 
     /**
+     * Configure a batch of service marshallers.
+     *
+     * @param services A map of PostService extension interface to the marshaller that implements
+     *                 it.
+     */
+    public void registerServices (Map<Class<? extends PostService>, PostService> services)
+    {
+        for (Map.Entry<Class<? extends PostService>, PostService> entry : services.entrySet()) {
+            Class<? extends PostService> service = entry.getKey();
+            PostService marshaller = entry.getValue();
+            if (service.isInstance(marshaller)) {
+                marshaller.init(this);
+                _services.put(service, marshaller);
+            }
+        }
+    }
+
+    /**
      * Set the auth code to send with each request, if this PostClient was configured to use it
      * in the constrcutor.
      *
