@@ -33,4 +33,7 @@ public class PostCodes
 
     /** This code is dispatched when a method was not found. */
     public static final String METHOD_NOT_FOUND = "e.method_not_found";
+
+    /** This code is dispatched when the auth check method returns false for a given call. */
+    public static final String AUTH_CHECK_FAILED = "e.auth_check_failed";
 }
