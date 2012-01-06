@@ -136,7 +136,9 @@ public class PostManager
             if (_authLocal != null) {
                 _authLocal.set(invoker.authCode);
             }
-            sendResult(invoker.invoke(), oos);
+            if (checkAuth(invoker)) {
+                sendResult(invoker.invoke(), oos);
+            }
 
         } catch (PostException pe) {
             if (PostCodes.STREAMING_ERROR.equals(pe.getMessage())) {
@@ -155,6 +157,15 @@ public class PostManager
             ois.close();
             oos.close();
         }
+    }
+
+    /**
+     * Override this method to perform auth at the invoker level, which has acceess to the serviceId
+     * and methodId
+     */
+    protected boolean checkAuth (ServiceMethodInvoker invoker)
+    {
+        return true;
     }
 
     protected ServiceMethodInvoker getInvoker (ObjectInputStream ois)
@@ -213,7 +224,7 @@ public class PostManager
             }
         }
 
-        return new ServiceMethodInvoker(dispatcher, methodId, args, authCode);
+        return new ServiceMethodInvoker(dispatcher, serviceId, methodId, args, authCode);
     }
 
     protected void sendResult (Object result, ObjectOutputStream oos)
@@ -240,14 +251,16 @@ public class PostManager
     protected static class ServiceMethodInvoker
     {
         public final PostDispatcher dispatcher;
+        public final int serviceId;
         public final int methodId;
         public final Object[] args;
         public final String authCode;
 
-        public ServiceMethodInvoker (PostDispatcher dispatcher, int methodId, Object[] args,
-                                     String authCode)
+        public ServiceMethodInvoker (PostDispatcher dispatcher, int serviceId, int methodId,
+            Object[] args, String authCode)
         {
             this.dispatcher = dispatcher;
+            this.serviceId = serviceId;
             this.methodId = methodId;
             this.args = args;
             this.authCode = authCode;
