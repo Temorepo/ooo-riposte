@@ -183,6 +183,8 @@ public class PostClient
             }
             oos.writeInt(serviceId);
             oos.writeInt(methodId);
+            oos.writeObject(args);
+
         } catch (IOException ioe) {
             log.warning("Exception encountered writing pre-args values", ioe);
         }
