@@ -138,6 +138,8 @@ public class PostManager
             }
             if (checkAuth(invoker)) {
                 sendResult(invoker.invoke(), oos);
+            } else {
+                sendException(new PostException(PostCodes.AUTH_CHECK_FAILED), oos);
             }
 
         } catch (PostException pe) {
