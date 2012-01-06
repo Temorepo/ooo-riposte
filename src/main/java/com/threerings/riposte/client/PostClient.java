@@ -51,15 +51,14 @@ public class PostClient
      * Create a new PostClient for processing RPC calls to the Java server.
      *
      * @param serviceAddress The fully qualified HTTP address to connect to the server at.
-     * @param version The version string to send along with RPC requests.  If this version is null
-     *                an error will be thrown on the server unless the server is also configured
-     *                with a null version.
+     * @param version The version string to send along with RPC requests. If null is given here, the
+     *                empty string is used instead.
      */
     public PostClient (String serviceAddress, String version, boolean useAuthCode,
         PostListener defaultListener)
     {
         _serviceAddress = serviceAddress;
-        _version = version;
+        _version = version == null ? "" : version;
         _useAuthCode = useAuthCode;
         _defaultListener = defaultListener;
     }
