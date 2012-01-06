@@ -183,18 +183,17 @@ public class PostClient
             }
             oos.writeInt(serviceId);
             oos.writeInt(methodId);
-            oos.writeObject(args);
 
         } catch (IOException ioe) {
             log.warning("Exception encountered writing pre-args values", ioe);
         }
-        final byte[] bytes = bos.toByteArray();
 
         try {
             oos.writeObject(others.toArray(new Object[others.size()]));
         } catch (IOException ioe) {
             log.warning("Exception encountered writing args", ioe);
         }
+        final byte[] bytes = bos.toByteArray();
 
         _queue.add(new Runnable() {
             public void run () {
