@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<project name="riposte" basedir="." default="compile" xmlns:artifact="urn:maven-artifact-ant">
+  <property name="jsrc.dir" value="src/main/java"/>
+  <property name="asrc.dir" value="src/main/as"/>
+  <property name="deploy.dir" value="dist"/>
+  <property name="classes.dir" value="${deploy.dir}/classes"/>
+
+  <property name="ooo-build.vers" value="2.5"/>
+  <ant antfile="etc/bootstrap.xml"/>
+  <import file="${user.home}/.m2/ooo-build/${ooo-build.vers}/ooo-build.xml"/>
+
+  <target name="-prepare" depends="-init-ooo">
+    <mavendep pom="pom.xml" path="compile.classpath"/>
+    <mavendep pom="etc/as-pom.xml" pathProp="aslib.path"/>
+    <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.0"/>
+    <mkdir dir="${deploy.dir}"/>
+    <path id="built.classpath">
+      <path refid="compile.classpath"/>
+      <pathelement location="${classes.dir}"/>
+    </path>
+  </target>
+
+  <target name="clean" description="Cleans out build results">
+    <delete dir="${deploy.dir}/classes"/>
+    <delete dir="${deploy.dir}/docs"/>
+    <delete failonerror="false"><fileset dir="${deploy.dir}" includes="*.jar"/></delete>
+    <delete failonerror="false"><fileset dir="${deploy.dir}" includes="*.swc"/></delete>
+  </target>
+
+  <target name="distclean" description="Scorched earth clean">
+    <delete dir="${deploy.dir}"/>
+  </target>
+
+  <target name="compile" depends="-prepare" description="Builds the Java code.">
+    <copy todir="${classes.dir}"><fileset dir="src/main/resources" includes="**"/></copy>
+    <ooojavac version="1.5" srcdir="${jsrc.dir}" destdir="${classes.dir}"
+              classpathref="compile.classpath"/>
+  </target>
+
+  <target name="aslib" depends="-prepare" description="Builds the ActionScript library (.swc file)">
+    <compc srcdir="${asrc.dir}" libpath="${aslib.path}"
+           dest="${deploy.dir}/${ant.project.name}lib.swc"/>
+  </target>
+
+  <target name="javadoc" depends="-prepare" description="Builds javadoc documentation">
+    <property name="javadoc.dir" value="docs/javadoc"/>
+    <property name="doc.overview" value="docs/overview.html"/>
+    <tstamp><format property="year" pattern="yyyy"/></tstamp>
+    <javadoc windowtitle="${ant.project.name} API" doctitle="${ant.project.name} API"
+             overview="${doc.overview}" destdir="${javadoc.dir}">
+      <packageset dir="${jsrc.dir}"/>
+      <bottom>Copyright &#169; 2009-${year} Nathan Curtis.  All Rights Reserved.</bottom>
+      <classpath refid="compile.classpath"/>
+      <link href="http://download.oracle.com/javase/1.5.0/docs/api/"/>
+      <link href="http://samskivert.com/code/samskivert/docs/"/>
+      <link href="http://www.threerings.net/code/narya/docs/api/"/>
+      <link href="http://docs.guava-libraries.googlecode.com/git/javadoc/"/>
+      <link href="http://google-guice.googlecode.com/svn/trunk/javadoc/"/>
+      <link href="http://java.sun.com/products/servlet/2.5/docs/servlet-2_5-mr2/"/>
+    </javadoc>
+  </target>
+
+  <target name="asdoc" unless="no_build_aslib" depends="-prepare"
+          description="Builds the ActionScript documention">
+    <mkdir dir="${deploy.dir}/asdocs"/>
+    <asdoc srcdir="${asrc.dir}" libpath="${acompile.path}" destdir="${deploy.dir}/asdocs"/>
+  </target>
+
+  <target name="dist" depends="compile,aslib" description="Compiles code, builds jar files.">
+    <jar destfile="${deploy.dir}/${ant.project.name}.jar" basedir="${classes.dir}"/>
+  </target>
+
+  <target name="maven-deploy" depends="dist"
+          description="Deploys our build artifacts to a Maven repository.">
+    <mavendeploy file="${deploy.dir}/${ant.project.name}.jar" srcdir="${jsrc.dir}" pom="pom.xml"/>
+    <mavendeploy file="${deploy.dir}/${ant.project.name}.jar" pom="etc/tools-pom.xml"/>
+    <mavendeploy file="${deploy.dir}/${ant.project.name}lib.swc" pom="etc/as-pom.xml"/>
+  </target>
+</project>

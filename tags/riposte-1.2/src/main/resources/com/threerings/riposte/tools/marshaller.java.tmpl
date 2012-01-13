@@ -1,0 +1,44 @@
+package {{package}};
+
+import com.threerings.riposte.client.PostResultListener;
+import com.threerings.riposte.data.PostMarshaller;
+import {{spackage}}.{{name}}PostService;
+{{#imports}}
+import {{this}};
+{{/imports}}
+
+/**
+ * Provides the implementation of the <code>{{name}}Service</code> interface that marshalls the
+ * arguments and delivers the request to the service implementor on the server.
+ */
+public class {{name}}Marshaller extends PostMarshaller
+    implements {{name}}PostService
+{
+    public static int SERVICE_ID = {{serviceId}};
+
+{{#methods}}
+{{^-first}}
+
+{{/-first}}
+    /** The method id used to dispatch <code>{{method.name}}</code> requests. */
+    public static final int {{code}} = {{-index}};
+
+    // from interface {{name}}PostService
+    public void {{method.name}} ({{#hasArgs}}{{getArgList}}{{/hasArgs}})
+    {
+        {{method.name}}({{#hasArgs}}{{getWrappedArgList}}, {{/hasArgs}}null);
+    }
+
+    // from interface {{name}}PostService
+    public void {{method.name}} ({{#hasArgs}}{{getArgList}}, {{/hasArgs}}{{getPostListener}})
+    {
+        Object[] args = new Object[]{ {{#hasArgs}}{{getWrappedArgList}}, {{/hasArgs}}listener };
+        sendRequest({{code}}, args);
+    }
+{{/methods}}
+
+    @Override public int getServiceId ()
+    {
+        return SERVICE_ID;
+    }
+}
