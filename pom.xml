@@ -4,7 +4,7 @@
   <groupId>com.threerings</groupId>
   <artifactId>riposte</artifactId>
   <packaging>jar</packaging>
-  <version>1.2</version>
+  <version>1.3-SNAPSHOT</version>
   <name>riposte</name>
   <description>
     A client/server library for performing RPC calls with binary object streaming over HTTP POST.
